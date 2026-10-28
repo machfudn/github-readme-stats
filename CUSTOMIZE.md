@@ -29,14 +29,6 @@ README publik
 - Akun GitHub `machfudn` dan akun Vercel yang terhubung ke GitHub.
 - Classic Personal Access Token (PAT) dari akun GitHub.
 
-Cek versi:
-
-```powershell
-node -v
-npm -v
-git --version
-```
-
 ## 3. Fork dan push
 
 1. Buka `https://github.com/anuraghazra/github-readme-stats`.
@@ -45,10 +37,8 @@ git --version
 
 ```powershell
 git remote -v
-
 # Jika origin masih mengarah ke anuraghazra, ubah ke fork Anda:
 git remote set-url origin https://github.com/machfudn/github-readme-stats.git
-
 git push -u origin master
 ```
 
@@ -81,16 +71,13 @@ Salin `.env.example` menjadi `.env` di root proyek (file ini sudah masuk `.gitig
 PAT_1=ghp_xxxxxxxxxxxxxxxxxxxx
 GITHUB_USERNAME=machfudn
 WHITELIST=machfudn
-
 # URL publik instance; isi setelah deploy, TANPA trailing slash.
 # Untuk tes lokal sementara boleh: http://localhost:9000
 SITE_URL=https://github-readme-stats-machfudn.vercel.app
-
 # Opsional runtime
 CACHE_SECONDS=21600
 FETCH_MULTI_PAGE_STARS=true
 EXCLUDE_REPO=
-
 # Opsional generator README
 README_THEME=transparent
 README_LOCALE=id
@@ -104,13 +91,13 @@ README_LANGS_COUNT=8
 | `GITHUB_USERNAME` | Ya | Fallback saat `?username=` dihilangkan. Isi `machfudn`. |
 | `WHITELIST` | Ya di Vercel | Hanya `machfudn` yang boleh memakai instance/token Anda. |
 | `SITE_URL` | Ya untuk generator | Domain produksi, tanpa `/` di akhir. |
-| `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, `EXCLUDE_REPO` | Tidak | Cache, multi-page stars, dan repo yang dikecualikan dari agregat. |
+| `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, `EXCLUDE_REPO` | Tidak | Cache, multi-page stars, dan repo untuk stars/top-langs; `EXCLUDE_REPO` tidak mengurangi total commit. |
 | `README_*` | Tidak | Hanya dibaca generator README: tema, locale, all commits, jumlah bahasa. |
 
 Catatan:
 
 - **`SITE_URL` tanpa trailing slash.** Benar: `https://github-readme-stats-machfudn.vercel.app`; salah: `.../`.
-- `EXCLUDE_REPO` memakai nama repo saja, misalnya `EXCLUDE_REPO=repo-berat,repo-lain` (pisahkan dengan koma).
+- `EXCLUDE_REPO` memakai nama repo saja, misalnya `EXCLUDE_REPO=repo-berat,repo-lain` (pisahkan dengan koma). Ini hanya memengaruhi stars dan top-langs, bukan total commit.
 - Di Vercel, isi variabel lewat dashboard. Setelah mengubah `.env`, restart `node express.js`; setelah mengubah env Vercel, redeploy.
 
 ## 6. Tes lokal
@@ -126,7 +113,7 @@ Server berjalan di port `9000`. Buka URL berikut **tanpa `?username=`** untuk me
 - `http://localhost:9000/api/top-langs/`
 - Opsional, hanya repo publik: `http://localhost:9000/api/pin/?repo=github-readme-stats`
 
-Buka di browser atau dengan `Start-Process "http://localhost:9000/api"`. Jika kartu menampilkan data `machfudn`, fallback berfungsi. Jika tidak ada token, kartu akan menampilkan pesan **`No GitHub API tokens found`**. Itu normal dan bukan bug aplikasi; isi `PAT_1` di `.env`, lalu restart server. Token yang salah atau kedaluwarsa juga akan gagal mengambil data.
+Buka di browser atau dengan `Start-Process "http://localhost:9000/api"`. Jika kartu menampilkan data `machfudn`, fallback berfungsi. Jika `PAT_1` tidak diset, kartu menampilkan **`No GitHub API tokens found`**; itu normal. Jika barisnya ada tetapi kosong atau kedaluwarsa, isi/rotasi token lalu restart server.
 
 ## 7. Deploy ke Vercel
 
@@ -164,7 +151,7 @@ Pastikan `.env` sudah berisi `SITE_URL` dan variabel `README_*` yang diinginkan.
 npm run readme:snippet
 ```
 
-Perintah ini mencetak blok Markdown/HTML ke terminal. Contoh hasilnya:
+Perintah ini mencetak blok Markdown/HTML ke terminal. Contoh ringkasnya:
 
 ```markdown
 <!-- github-readme-stats:start -->
@@ -218,8 +205,7 @@ Daftar tema lengkap ada di `themes/README.md`; daftar locale ada di `readme.md` 
 
 - **`WHITELIST=machfudn` wajib di Vercel.** Tanpa whitelist, siapa pun dapat memakai instance dan kuota token Anda untuk username lain. Whitelist tidak menyembunyikan statistik publik `machfudn`; kartu yang sudah di-embed tetap publik.
 - Jangan commit `.env`. Verifikasi dengan `git check-ignore -v .env`; file itu sudah tercantum di `.gitignore`.
-- Gunakan token khusus untuk deployment ini, dengan masa berlaku terbatas. Rotasi sebelum kedaluwarsa.
-- Jika token bocor: **revoke segera** di GitHub Settings, buat token baru, perbarui `PAT_1` di Vercel, lalu redeploy. Hapus juga token dari tempat bocornya.
+- Gunakan token khusus dengan masa berlaku terbatas dan rotasi sebelum kedaluwarsa. Jika bocor: **revoke segera**, buat token baru, perbarui `PAT_1` di Vercel, lalu redeploy.
 - Jangan gunakan `/api/pin/` untuk repo private. Route ini menampilkan nama dan deskripsi repo, dan cache pihak ketiga dapat menyimpannya.
 - `CACHE_SECONDS=21600` mengurangi request ke GitHub, tetapi juga menunda pembaruan angka. Cache GitHub Camo dapat membuat gambar lama tetap muncul setelah README diubah.
 - Deployment kartu harus dapat diakses publik agar GitHub bisa mengambil gambar. Karena itu, perlindungan utama adalah agregasi data dan whitelist, bukan URL rahasia.
@@ -234,7 +220,7 @@ Daftar tema lengkap ada di `themes/README.md`; daftar locale ada di `readme.md` 
 | Angka private rendah atau nol | Setting profil belum mengizinkan kontribusi private | Aktifkan **Include private contributions on my profile** di pengaturan profil GitHub. |
 | Commit private tetap tidak masuk | Memakai fine-grained token | Ganti dengan classic PAT scope `repo` + `read:user`. |
 | Env Vercel tidak berefek | Env hanya berlaku pada deployment baru | Redeploy environment **Production**, bukan hanya menyimpan env. |
-| Link/gambar di snippet salah | `SITE_URL` salah, memakai domain preview, atau ada trailing slash | Perbaiki ke domain produksi tanpa `/`, redeploy, lalu generate ulang snippet. |
+| Link/gambar di snippet salah | `SITE_URL` salah, memakai domain preview, atau ada trailing slash | Perbaiki ke domain produksi tanpa `/`, lalu generate ulang snippet; redeploy jika env Vercel diubah. |
 | Kartu masih menampilkan data lama | Cache `CACHE_SECONDS` atau cache GitHub Camo | Tunggu masa cache, turunkan `CACHE_SECONDS`, lalu redeploy. |
 | `This username is not whitelisted` | Meminta username selain `machfudn` | Hapus `?username=`, atau sesuaikan `WHITELIST` bila memang diperlukan. |
 
@@ -244,8 +230,7 @@ Jika kartu error, buka URL langsung di browser (bukan hanya lewat README) untuk 
 
 Repo `anuraghazra/github-readme-stats` sudah **tidak dirawat**. README upstream menunjuk successor aktif:
 
-- **GitHub Stats Extended:** `https://github.com/stats-organization/github-stats-extended`
-- Alternatif action: `https://github.com/stats-organization/github-readme-stats-action`
+- **GitHub Stats Extended:** `https://github.com/stats-organization/github-stats-extended` — alternatif action ada di `stats-organization/github-readme-stats-action`.
 
 Instance publik upstream juga tidak disarankan untuk kebutuhan produksi atau data private. Fork ini tetap dapat dipakai, tetapi tidak menerima patch keamanan rutin.
 
