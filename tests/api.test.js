@@ -90,6 +90,8 @@ const error = {
 
 const mock = new MockAdapter(axios);
 
+const originalGithubUsername = process.env.GITHUB_USERNAME;
+
 // @ts-ignore
 const faker = (query, data) => {
   const req = {
@@ -113,11 +115,29 @@ beforeEach(() => {
 
 afterEach(() => {
   mock.reset();
+
+  if (originalGithubUsername === undefined) {
+    delete process.env.GITHUB_USERNAME;
+  } else {
+    process.env.GITHUB_USERNAME = originalGithubUsername;
+  }
 });
 
 describe("Test /api/", () => {
   it("should test the request", async () => {
     const { req, res } = faker({}, data_stats);
+
+    await api(req, res);
+
+    expect(res.setHeader).toHaveBeenCalledWith("Content-Type", "image/svg+xml");
+    expect(res.send).toHaveBeenCalledWith(
+      renderStatsCard(stats, { ...req.query }),
+    );
+  });
+
+  it("should use GITHUB_USERNAME when username is missing", async () => {
+    process.env.GITHUB_USERNAME = "machfudn";
+    const { req, res } = faker({ username: undefined }, data_stats);
 
     await api(req, res);
 

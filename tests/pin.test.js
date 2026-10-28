@@ -36,8 +36,16 @@ const data_user = {
 
 const mock = new MockAdapter(axios);
 
+const originalGithubUsername = process.env.GITHUB_USERNAME;
+
 afterEach(() => {
   mock.reset();
+
+  if (originalGithubUsername === undefined) {
+    delete process.env.GITHUB_USERNAME;
+  } else {
+    process.env.GITHUB_USERNAME = originalGithubUsername;
+  }
 });
 
 describe("Test /api/pin", () => {
@@ -45,6 +53,31 @@ describe("Test /api/pin", () => {
     const req = {
       query: {
         username: "anuraghazra",
+        repo: "convoychat",
+      },
+    };
+    const res = {
+      setHeader: jest.fn(),
+      send: jest.fn(),
+    };
+    mock.onPost("https://api.github.com/graphql").reply(200, data_user);
+
+    await pin(req, res);
+
+    expect(res.setHeader).toHaveBeenCalledWith("Content-Type", "image/svg+xml");
+    expect(res.send).toHaveBeenCalledWith(
+      // @ts-ignore
+      renderRepoCard({
+        ...data_repo.repository,
+        starCount: data_repo.repository.stargazers.totalCount,
+      }),
+    );
+  });
+
+  it("should use GITHUB_USERNAME when username is missing", async () => {
+    process.env.GITHUB_USERNAME = "machfudn";
+    const req = {
+      query: {
         repo: "convoychat",
       },
     };
