@@ -18,10 +18,8 @@ README publik
    -> SVG berisi angka agregat
 ```
 
-- Endpoint utama: `/api` (stats), `/api/top-langs/` (bahasa), `/api/pin/` (kartu repo).
-- Tidak ada database. Hasil di-cache lewat header HTTP dan cache GitHub Camo.
-- `GITHUB_USERNAME` membuat `?username=` boleh dihilangkan pada ketiga endpoint di atas.
-- `WHITELIST` membatasi username yang boleh diproses, tetapi tidak membatasi nama repo pada `/api/pin/`.
+- Endpoint utama: `/api` (stats), `/api/top-langs/` (bahasa), `/api/pin/` (kartu repo). Tidak ada database; hasil di-cache lewat header HTTP dan GitHub Camo.
+- `GITHUB_USERNAME` membuat `?username=` boleh dihilangkan pada ketiga endpoint. `WHITELIST` membatasi username, tetapi tidak membatasi nama repo pada `/api/pin/`.
 
 **Privasi:** dengan classic PAT yang punya scope `repo`, repo private ikut masuk ke agregat. Ini berguna untuk angka yang lebih lengkap, tetapi konsekuensinya angka tersebut dapat dilihat publik jika kartunya di-embed. Jangan pernah menampilkan nama atau deskripsi repo private. Endpoint `/api/pin/` tidak memiliki kontrol akses per-repo; siapa pun yang mengetahui nama repo dapat meminta kartunya. Jika tidak diperlukan, jangan publikasikan route pin, atau blokir di Vercel Firewall.
 
@@ -79,21 +77,21 @@ Jangan pernah menaruh token di README, issue, screenshot, chat, atau commit Git.
 Salin `.env.example` menjadi `.env` di root proyek (file ini sudah masuk `.gitignore`), lalu sesuaikan. Contoh lengkap:
 
 ```dotenv
-# Wajib untuk mengambil data dan fallback username
+# Wajib: token, fallback username, dan whitelist
 PAT_1=ghp_xxxxxxxxxxxxxxxxxxxx
 GITHUB_USERNAME=machfudn
 WHITELIST=machfudn
 
-# URL publik instance. Isi setelah deploy Vercel; TANPA trailing slash.
+# URL publik instance; isi setelah deploy, TANPA trailing slash.
 # Untuk tes lokal sementara boleh: http://localhost:9000
 SITE_URL=https://github-readme-stats-machfudn.vercel.app
 
-# Opsional untuk runtime server
+# Opsional runtime
 CACHE_SECONDS=21600
 FETCH_MULTI_PAGE_STARS=true
 EXCLUDE_REPO=
 
-# Opsional untuk generator snippet README
+# Opsional generator README
 README_THEME=transparent
 README_LOCALE=id
 README_INCLUDE_ALL_COMMITS=true
@@ -106,9 +104,7 @@ README_LANGS_COUNT=8
 | `GITHUB_USERNAME` | Ya | Fallback saat `?username=` dihilangkan. Isi `machfudn`. |
 | `WHITELIST` | Ya di Vercel | Hanya `machfudn` yang boleh memakai instance/token Anda. |
 | `SITE_URL` | Ya untuk generator | Domain produksi, tanpa `/` di akhir. |
-| `CACHE_SECONDS` | Tidak | `21600` = 6 jam. Mengurangi pemakaian kuota API. |
-| `FETCH_MULTI_PAGE_STARS` | Tidak | `true` untuk akun dengan lebih dari 100 repo; menambah request. |
-| `EXCLUDE_REPO` | Tidak | Nama repo dipisahkan koma, tanpa `machfudn/`, untuk dikeluarkan dari agregat. |
+| `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, `EXCLUDE_REPO` | Tidak | Cache, multi-page stars, dan repo yang dikecualikan dari agregat. |
 | `README_*` | Tidak | Hanya dibaca generator README: tema, locale, all commits, jumlah bahasa. |
 
 Catatan:
@@ -172,12 +168,8 @@ Perintah ini mencetak blok Markdown/HTML ke terminal. Contoh hasilnya:
 
 ```markdown
 <!-- github-readme-stats:start -->
-<a href="https://github.com/machfudn">
-  <img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=transparent&locale=id&include_all_commits=true" alt="GitHub Stats machfudn" />
-</a>
-<a href="https://github.com/machfudn?tab=repositories">
-  <img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=transparent&locale=id" alt="Top Languages machfudn" />
-</a>
+<a href="https://github.com/machfudn"><img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=transparent&locale=id&include_all_commits=true" alt="GitHub Stats machfudn" /></a>
+<a href="https://github.com/machfudn?tab=repositories"><img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=transparent&locale=id" alt="Top Languages machfudn" /></a>
 <!-- github-readme-stats:end -->
 ```
 
