@@ -27,10 +27,8 @@ README publik
 
 ## 2. Prasyarat
 
-- Node.js **>= 22** (repo ini memakai `.nvmrc` berisi `22`).
-- npm dan Git.
-- Akun GitHub `machfudn`.
-- Akun Vercel yang terhubung ke GitHub.
+- Node.js **>= 22** (repo ini memakai `.nvmrc` berisi `22`), npm, dan Git.
+- Akun GitHub `machfudn` dan akun Vercel yang terhubung ke GitHub.
 - Classic Personal Access Token (PAT) dari akun GitHub.
 
 Cek versi:
@@ -66,9 +64,7 @@ Gunakan **token classic**, bukan fine-grained, karena fine-grained tidak menghit
 2. Klik **Generate new token (classic)**.
 3. Beri nama, misalnya `grs-machfudn-vercel`.
 4. Pilih masa berlaku terbatas, misalnya 90 hari, dan catat pengingat rotasi.
-5. Centang scope:
-   - `repo` — wajib untuk repo private.
-   - `read:user` — wajib untuk data profil.
+5. Centang `repo` (wajib untuk repo private) dan `read:user` (data profil).
 6. Generate, lalu salin token satu kali. Simpan hanya di password manager.
 
 | Jenis token | Commit private | Dipakai di panduan ini |
@@ -80,7 +76,7 @@ Jangan pernah menaruh token di README, issue, screenshot, chat, atau commit Git.
 
 ## 5. Konfigurasi `.env` lokal
 
-Buat file `.env` di root proyek (file ini sudah masuk `.gitignore`). Contoh lengkap:
+Salin `.env.example` menjadi `.env` di root proyek (file ini sudah masuk `.gitignore`), lalu sesuaikan. Contoh lengkap:
 
 ```dotenv
 # Wajib untuk mengambil data dan fallback username
@@ -90,7 +86,7 @@ WHITELIST=machfudn
 
 # URL publik instance. Isi setelah deploy Vercel; TANPA trailing slash.
 # Untuk tes lokal sementara boleh: http://localhost:9000
-SITE_URL=https://grs-machfudn.vercel.app
+SITE_URL=https://github-readme-stats-machfudn.vercel.app
 
 # Opsional untuk runtime server
 CACHE_SECONDS=21600
@@ -98,7 +94,7 @@ FETCH_MULTI_PAGE_STARS=true
 EXCLUDE_REPO=
 
 # Opsional untuk generator snippet README
-README_THEME=radical
+README_THEME=transparent
 README_LOCALE=id
 README_INCLUDE_ALL_COMMITS=true
 README_LANGS_COUNT=8
@@ -117,10 +113,9 @@ README_LANGS_COUNT=8
 
 Catatan:
 
-- **Jangan menambahkan trailing slash pada `SITE_URL`.** Contoh benar: `https://grs-machfudn.vercel.app`. Contoh salah: `https://grs-machfudn.vercel.app/`.
-- `EXCLUDE_REPO` memakai nama repo saja, misalnya `EXCLUDE_REPO=repo-berat,repo-lain`. Pemisahnya koma.
-- Di Vercel, isi variabel lewat dashboard; file `.env` hanya untuk lokal dan tidak ikut deploy.
-- Setelah mengubah `.env`, restart `node express.js`. Setelah mengubah env Vercel, redeploy.
+- **`SITE_URL` tanpa trailing slash.** Benar: `https://github-readme-stats-machfudn.vercel.app`; salah: `.../`.
+- `EXCLUDE_REPO` memakai nama repo saja, misalnya `EXCLUDE_REPO=repo-berat,repo-lain` (pisahkan dengan koma).
+- Di Vercel, isi variabel lewat dashboard. Setelah mengubah `.env`, restart `node express.js`; setelah mengubah env Vercel, redeploy.
 
 ## 6. Tes lokal
 
@@ -135,14 +130,7 @@ Server berjalan di port `9000`. Buka URL berikut **tanpa `?username=`** untuk me
 - `http://localhost:9000/api/top-langs/`
 - Opsional, hanya repo publik: `http://localhost:9000/api/pin/?repo=github-readme-stats`
 
-Di PowerShell:
-
-```powershell
-Start-Process "http://localhost:9000/api"
-Start-Process "http://localhost:9000/api/top-langs/"
-```
-
-Jika kartu menampilkan data `machfudn`, fallback berfungsi. Jika tidak ada token, kartu akan menampilkan pesan **`No GitHub API tokens found`**. Itu normal dan bukan bug aplikasi; isi `PAT_1` di `.env`, lalu restart server. Token yang salah atau kedaluwarsa juga akan gagal mengambil data.
+Buka di browser atau dengan `Start-Process "http://localhost:9000/api"`. Jika kartu menampilkan data `machfudn`, fallback berfungsi. Jika tidak ada token, kartu akan menampilkan pesan **`No GitHub API tokens found`**. Itu normal dan bukan bug aplikasi; isi `PAT_1` di `.env`, lalu restart server. Token yang salah atau kedaluwarsa juga akan gagal mengambil data.
 
 ## 7. Deploy ke Vercel
 
@@ -161,7 +149,7 @@ Jika kartu menampilkan data `machfudn`, fallback berfungsi. Jika tidak ada token
 | `FETCH_MULTI_PAGE_STARS` | `true` |
 | `EXCLUDE_REPO` | opsional, nama repo dipisahkan koma |
 
-5. Deploy. Setelah mendapat domain seperti `https://grs-machfudn.vercel.app`, isi `SITE_URL` dengan domain tersebut (atau domain custom Anda).
+5. Deploy. Setelah mendapat domain seperti `https://github-readme-stats-machfudn.vercel.app`, isi `SITE_URL` dengan domain tersebut (atau domain custom Anda).
 6. **Redeploy** setelah menambah atau mengubah env. Perubahan env tidak berlaku pada deployment lama.
 7. Tes produksi tanpa parameter username:
 
@@ -180,11 +168,17 @@ Pastikan `.env` sudah berisi `SITE_URL` dan variabel `README_*` yang diinginkan.
 npm run readme:snippet
 ```
 
-Perintah ini mencetak Markdown ke terminal. Contoh hasilnya:
+Perintah ini mencetak blok Markdown/HTML ke terminal. Contoh hasilnya:
 
 ```markdown
-[![GitHub Stats](https://grs-machfudn.vercel.app/api?show_icons=true&theme=radical&locale=id&include_all_commits=true)](https://github.com/machfudn)
-[![Top Langs](https://grs-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=radical&locale=id)](https://github.com/machfudn)
+<!-- github-readme-stats:start -->
+<a href="https://github.com/machfudn">
+  <img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=transparent&locale=id&include_all_commits=true" alt="GitHub Stats machfudn" />
+</a>
+<a href="https://github.com/machfudn?tab=repositories">
+  <img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=transparent&locale=id" alt="Top Languages machfudn" />
+</a>
+<!-- github-readme-stats:end -->
 ```
 
 Untuk menulis langsung ke file:
@@ -193,14 +187,14 @@ Untuk menulis langsung ke file:
 node scripts/print-readme.mjs --write PROFILE_README.md
 ```
 
-> [!WARNING]
-> Jangan menimpa `readme.md` resmi proyek dengan hasil generator. Tulis ke file terpisah seperti `PROFILE_README.md` atau `README.cards.md`, lalu salin blok Markdown ke README repo profil `machfudn/machfudn`. Periksa isi file sebelum commit.
+`--write` menyisipkan blok di antara marker `github-readme-stats:start/end`. Jika marker sudah ada, hanya blok itu yang diganti, sehingga isi README lain tetap aman.
 
-Jika `npm run readme:snippet` belum tersedia di salinan Anda, jalankan langsung `node scripts/print-readme.mjs`. Opsi `--write` menulis ke path yang diberikan; pastikan path tersebut bukan dokumentasi proyek.
+> [!WARNING]
+> Jangan menimpa `readme.md` resmi proyek dengan hasil generator. Tulis ke file terpisah seperti `PROFILE_README.md` atau `README.cards.md`, lalu salin blok ke README repo profil `machfudn/machfudn`. Periksa isi file sebelum commit.
 
 ## 9. Kustomisasi tampilan
 
-Parameter ditambahkan ke query string. Contoh memakai domain `https://grs-machfudn.vercel.app`; ganti dengan domain Anda.
+Parameter ditambahkan ke query string. Contoh memakai domain `https://github-readme-stats-machfudn.vercel.app`; ganti dengan domain Anda.
 
 | Kebutuhan | Parameter | Contoh nilai |
 | --- | --- | --- |
@@ -219,9 +213,9 @@ Parameter ditambahkan ke query string. Contoh memakai domain `https://grs-machfu
 Contoh URL:
 
 ```text
-https://grs-machfudn.vercel.app/api?show_icons=true&theme=tokyonight&locale=id&include_all_commits=true&hide=issues
-https://grs-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=tokyonight&locale=id&custom_title=Bahasa%20Favorit
-https://grs-machfudn.vercel.app/api/pin/?repo=github-readme-stats&theme=tokyonight
+https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=tokyonight&locale=id&include_all_commits=true&hide=issues
+https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=tokyonight&locale=id&custom_title=Bahasa%20Favorit
+https://github-readme-stats-machfudn.vercel.app/api/pin/?repo=github-readme-stats&theme=tokyonight
 ```
 
 Contoh terakhir hanya untuk repo **publik**. Untuk repo private, jangan gunakan `/api/pin/`.
