@@ -30,28 +30,28 @@ const getArgumentValue = (name) => {
 const siteUrl = (process.env.SITE_URL || "").trim().replace(/\/+$/, "");
 const username = (process.env.GITHUB_USERNAME || "").trim();
 const theme = (process.env.README_THEME || "transparent").trim();
-const locale = (process.env.README_LOCALE || "id").trim();
+const locale = (process.env.README_LOCALE || "en").trim();
 const langsCount = (process.env.README_LANGS_COUNT || "8").trim();
 const includeAllCommits =
   (process.env.README_INCLUDE_ALL_COMMITS || "true").toLowerCase() !== "false";
 
 if (!siteUrl) {
   console.error(
-    "SITE_URL belum diisi. Tambahkan SITE_URL=https://project.vercel.app ke .env",
+    "SITE_URL is not set. Add SITE_URL=https://project.vercel.app to .env",
   );
   process.exit(1);
 }
 
 if (!/^https?:\/\/[^/]+/i.test(siteUrl)) {
   console.error(
-    "SITE_URL harus berupa URL lengkap, misalnya https://project.vercel.app",
+    "SITE_URL must be a full URL, for example https://project.vercel.app",
   );
   process.exit(1);
 }
 
 if (!username) {
   console.error(
-    "GITHUB_USERNAME belum diisi. Tambahkan GITHUB_USERNAME=username_github ke .env",
+    "GITHUB_USERNAME is not set. Add GITHUB_USERNAME=github_username to .env",
   );
   process.exit(1);
 }
@@ -97,7 +97,7 @@ if (writeIndex === -1) {
 
   if (!outputPath) {
     console.error(
-      "Path output kosong. Contoh: node scripts/print-readme.mjs --write profile/README.md",
+      "The output path is empty. Example: node scripts/print-readme.mjs --write profile/README.md",
     );
     process.exit(1);
   }
@@ -128,5 +128,5 @@ if (writeIndex === -1) {
 
   await mkdir(path.dirname(absolutePath), { recursive: true });
   await writeFile(absolutePath, content, "utf8");
-  console.log(`Snippet README ditulis ke ${absolutePath}`);
+  console.log(`README snippet written to ${absolutePath}`);
 }

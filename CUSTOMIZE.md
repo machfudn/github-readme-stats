@@ -1,245 +1,245 @@
-# Panduan Self-Host GitHub Readme Stats (Fork `machfudn`)
+# Self-Hosting GitHub Readme Stats (fork `machfudn`)
 
-Dokumen ini menjelaskan cara menjalankan fork `machfudn/github-readme-stats` di Vercel dengan token GitHub, termasuk menghitung repo private sebagai **angka agregat** dan membuat snippet README otomatis.
+This document explains how to run the `machfudn/github-readme-stats` fork on Vercel with a GitHub token, including counting private repositories as **aggregate numbers** and generating a README snippet automatically.
 
 > [!WARNING]
-> Statistik private tetap menjadi **informasi publik** ketika kartu di-embed di README publik. Siapa pun dapat melihat jumlah commit, stars, PR, issue, repo, dan bahasa. Jangan meng-embed `/api/pin` untuk repo private karena kartu tersebut menampilkan nama dan deskripsi repo. Gunakan `/api` dan `/api/top-langs/` saja untuk data agregat.
+> Private statistics become **public information** when a card is embedded in a public README. Anyone can see the total number of commits, stars, pull requests, issues, repositories, and languages. Do not embed `/api/pin` for private repositories because that card shows the repository name and description. Use only `/api` and `/api/top-langs/` for aggregate data.
 
-## 1. Arsitektur dan peringatan privasi
+## 1. Architecture and privacy warning
 
-Alur sederhananya:
+The flow is:
 
 ```text
-README publik
-   -> <img src="https://domain-anda/api?...">
-   -> GitHub Camo (proxy + cache gambar)
+Public README
+   -> <img src="https://your-domain/api?...">
+   -> GitHub Camo (image proxy and cache)
    -> Vercel Function (/api, /api/top-langs/, /api/pin/)
-   -> GitHub API dengan PAT_1
-   -> SVG berisi angka agregat
+   -> GitHub API with PAT_1
+   -> SVG containing aggregate numbers
 ```
 
-- Endpoint utama: `/api` (stats), `/api/top-langs/` (bahasa), `/api/pin/` (kartu repo). Tidak ada database; hasil di-cache lewat header HTTP dan GitHub Camo.
-- `GITHUB_USERNAME` membuat `?username=` boleh dihilangkan pada ketiga endpoint. `WHITELIST` membatasi username, tetapi tidak membatasi nama repo pada `/api/pin/`.
+- Main endpoints: `/api` (stats), `/api/top-langs/` (languages), `/api/pin/` (repository card). There is no database; responses are cached through HTTP headers and GitHub Camo.
+- `GITHUB_USERNAME` lets you omit `?username=` on all three endpoints. `WHITELIST` restricts usernames, but it does not restrict repository names on `/api/pin/`.
 
-**Privasi:** dengan classic PAT yang punya scope `repo`, repo private ikut masuk ke agregat. Ini berguna untuk angka yang lebih lengkap, tetapi konsekuensinya angka tersebut dapat dilihat publik jika kartunya di-embed. Jangan pernah menampilkan nama atau deskripsi repo private. Endpoint `/api/pin/` tidak memiliki kontrol akses per-repo; siapa pun yang mengetahui nama repo dapat meminta kartunya. Jika tidak diperlukan, jangan publikasikan route pin, atau blokir di Vercel Firewall.
+**Privacy:** with a classic PAT that has the `repo` scope, private repositories are included in the aggregate. This gives more complete numbers, but those numbers become publicly visible if the card is embedded. Never display the name or description of a private repository. The `/api/pin/` endpoint has no per-repository access control; anyone who knows a repository name can request its card. If you do not need it, do not publish the pin route, or block it with Vercel Firewall.
 
-## 2. Prasyarat
+## 2. Prerequisites
 
-- Node.js **>= 22** (repo ini memakai `.nvmrc` berisi `22`), npm, dan Git.
-- Akun GitHub `machfudn` dan akun Vercel yang terhubung ke GitHub.
-- Classic Personal Access Token (PAT) dari akun GitHub.
+- Node.js **>= 22** (this repo uses an `.nvmrc` containing `22`), npm, and Git.
+- A GitHub account (`machfudn`) and a Vercel account connected to GitHub.
+- A classic Personal Access Token (PAT) from the GitHub account.
 
-## 3. Fork dan push
+## 3. Fork and push
 
-1. Buka `https://github.com/anuraghazra/github-readme-stats`.
-2. Klik **Fork** dan pilih pemilik `machfudn`, sehingga terbentuk `https://github.com/machfudn/github-readme-stats`.
-3. Dari folder lokal proyek ini, pastikan remote mengarah ke fork Anda, lalu push branch `master`.
+1. Open `https://github.com/anuraghazra/github-readme-stats`.
+2. Click **Fork** and choose the `machfudn` owner to create `https://github.com/machfudn/github-readme-stats`.
+3. From this local project folder, make sure the remote points to your fork, then push the `master` branch.
 
 ```powershell
 git remote -v
-# Jika origin masih mengarah ke anuraghazra, ubah ke fork Anda:
+# If origin still points to anuraghazra, change it to your fork:
 git remote set-url origin https://github.com/machfudn/github-readme-stats.git
 git push -u origin master
 ```
 
-Jika fork belum dibuat, tombol **Fork** harus dilakukan lebih dulu; push akan gagal bila repo tujuan belum ada. Jangan commit file `.env` atau token ke repo.
+If the fork has not been created yet, click **Fork** first; the push will fail if the destination repository does not exist. Do not commit `.env` or any token to the repository.
 
-## 4. Membuat classic PAT
+## 4. Create a classic PAT
 
-Gunakan **token classic**, bukan fine-grained, karena fine-grained tidak menghitung commit private dengan lengkap.
+Use a **classic token**, not a fine-grained token, because fine-grained tokens do not count private commits completely.
 
-1. Buka **GitHub Settings -> Developer settings -> Personal access tokens -> Tokens (classic)**.
-2. Klik **Generate new token (classic)**.
-3. Beri nama, misalnya `grs-machfudn-vercel`.
-4. Pilih masa berlaku terbatas, misalnya 90 hari, dan catat pengingat rotasi.
-5. Centang `repo` (wajib untuk repo private) dan `read:user` (data profil).
-6. Generate, lalu salin token satu kali. Simpan hanya di password manager.
+1. Open **GitHub Settings -> Developer settings -> Personal access tokens -> Tokens (classic)**.
+2. Click **Generate new token (classic)**.
+3. Give it a name, for example `grs-machfudn-vercel`.
+4. Choose a limited expiration, for example 90 days, and set a rotation reminder.
+5. Select `repo` (required for private repositories) and `read:user` (profile data).
+6. Generate the token and copy it once. Store it only in a password manager.
 
-| Jenis token | Commit private | Dipakai di panduan ini |
+| Token type | Private commits | Used in this guide |
 | --- | --- | --- |
-| Classic `repo` + `read:user` | Ya | Ya |
-| Fine-grained | Tidak (hanya commit publik) | Tidak |
+| Classic `repo` + `read:user` | Yes | Yes |
+| Fine-grained | No (public commits only) | No |
 
-Jangan pernah menaruh token di README, issue, screenshot, chat, atau commit Git. Token classic dengan `repo` memberi akses luas, jadi perlakukan seperti password.
+Never put a token in a README, issue, screenshot, chat message, or Git commit. A classic token with `repo` has broad access, so treat it like a password.
 
-## 5. Konfigurasi `.env` lokal
+## 5. Local `.env` configuration
 
-Salin `.env.example` menjadi `.env` di root proyek (file ini sudah masuk `.gitignore`), lalu sesuaikan. Contoh lengkap:
+Copy `.env.example` to `.env` in the project root (the file is already covered by `.gitignore`), then adjust it. Full example:
 
 ```dotenv
-# Wajib: token, fallback username, dan whitelist
+# Required: token, username fallback, and whitelist
 PAT_1=ghp_xxxxxxxxxxxxxxxxxxxx
 GITHUB_USERNAME=machfudn
 WHITELIST=machfudn
-# URL publik instance; isi setelah deploy, TANPA trailing slash.
-# Untuk tes lokal sementara boleh: http://localhost:9000
+# Public instance URL; fill this in after deployment, WITHOUT a trailing slash.
+# For temporary local testing you can use: http://localhost:9000
 SITE_URL=https://github-readme-stats-machfudn.vercel.app
-# Opsional runtime
+# Optional runtime settings
 CACHE_SECONDS=21600
 FETCH_MULTI_PAGE_STARS=true
 EXCLUDE_REPO=
-# Opsional generator README
+# Optional README generator settings
 README_THEME=transparent
-README_LOCALE=id
+README_LOCALE=en
 README_INCLUDE_ALL_COMMITS=true
 README_LANGS_COUNT=8
 ```
 
-| Variabel | Wajib | Keterangan |
+| Variable | Required | Description |
 | --- | --- | --- |
-| `PAT_1` | Ya | Token classic untuk GitHub API. Tanpa ini kartu error. |
-| `GITHUB_USERNAME` | Ya | Fallback saat `?username=` dihilangkan. Isi `machfudn`. |
-| `WHITELIST` | Ya di Vercel | Hanya `machfudn` yang boleh memakai instance/token Anda. |
-| `SITE_URL` | Ya untuk generator | Domain produksi, tanpa `/` di akhir. |
-| `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, `EXCLUDE_REPO` | Tidak | Cache, multi-page stars, dan repo untuk stars/top-langs; `EXCLUDE_REPO` tidak mengurangi total commit. |
-| `README_*` | Tidak | Hanya dibaca generator README: tema, locale, all commits, jumlah bahasa. |
+| `PAT_1` | Yes | Classic token for the GitHub API. Without it, the card shows an error. |
+| `GITHUB_USERNAME` | Yes | Fallback when `?username=` is omitted. Set it to `machfudn`. |
+| `WHITELIST` | Yes on Vercel | Only `machfudn` may use your instance and token. |
+| `SITE_URL` | Yes for the generator | Production domain, without a trailing `/`. |
+| `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, `EXCLUDE_REPO` | No | Cache, multi-page stars, and repositories excluded from stars/top-langs; `EXCLUDE_REPO` does not reduce the total commit count. |
+| `README_*` | No | Read only by the README generator: theme, locale, all commits, and language count. |
 
-Catatan:
+Notes:
 
-- **`SITE_URL` tanpa trailing slash.** Benar: `https://github-readme-stats-machfudn.vercel.app`; salah: `.../`.
-- `EXCLUDE_REPO` memakai nama repo saja, misalnya `EXCLUDE_REPO=repo-berat,repo-lain` (pisahkan dengan koma). Ini hanya memengaruhi stars dan top-langs, bukan total commit.
-- Di Vercel, isi variabel lewat dashboard. Setelah mengubah `.env`, restart `node express.js`; setelah mengubah env Vercel, redeploy.
+- **`SITE_URL` must not have a trailing slash.** Correct: `https://github-readme-stats-machfudn.vercel.app`; incorrect: `.../`.
+- `EXCLUDE_REPO` uses repository names only, for example `EXCLUDE_REPO=heavy-repo,other-repo` (comma-separated). It only affects stars and top-langs, not the total commit count.
+- On Vercel, set variables through the dashboard. After changing `.env`, restart `node express.js`; after changing Vercel environment variables, redeploy.
 
-## 6. Tes lokal
+## 6. Local testing
 
 ```powershell
 npm install
 node express.js
 ```
 
-Server berjalan di port `9000`. Buka URL berikut **tanpa `?username=`** untuk membuktikan fallback `GITHUB_USERNAME`:
+The server listens on port `9000`. Open the following URLs **without `?username=`** to verify the `GITHUB_USERNAME` fallback:
 
 - `http://localhost:9000/api`
 - `http://localhost:9000/api/top-langs/`
-- Opsional, hanya repo publik: `http://localhost:9000/api/pin/?repo=github-readme-stats`
+- Optional, public repositories only: `http://localhost:9000/api/pin/?repo=github-readme-stats`
 
-Buka di browser atau dengan `Start-Process "http://localhost:9000/api"`. Jika kartu menampilkan data `machfudn`, fallback berfungsi. Jika `PAT_1` tidak diset, kartu menampilkan **`No GitHub API tokens found`**; itu normal. Jika barisnya ada tetapi kosong atau kedaluwarsa, isi/rotasi token lalu restart server.
+Open them in a browser or with `Start-Process "http://localhost:9000/api"`. If the card shows `machfudn` data, the fallback is working. If `PAT_1` is not set, the card shows **`No GitHub API tokens found`**; that is expected. If the variable exists but is empty or expired, fill in or rotate the token, then restart the server.
 
-## 7. Deploy ke Vercel
+## 7. Deploy to Vercel
 
-1. Di Vercel, klik **Add New... -> Project**.
-2. Import repo `machfudn/github-readme-stats`.
-3. Biarkan pengaturan default; Vercel mendeteksi fungsi di folder `api/`. Tidak perlu build command khusus.
-4. Buka **Settings -> Environment Variables**, lalu tambahkan untuk **Production**:
+1. In Vercel, click **Add New... -> Project**.
+2. Import the `machfudn/github-readme-stats` repository.
+3. Keep the default settings; Vercel detects the functions in the `api/` folder. No custom build command is required.
+4. Open **Settings -> Environment Variables**, then add these for **Production**:
 
 | Name | Value |
 | --- | --- |
-| `PAT_1` | token classic Anda (simpan sebagai secret) |
+| `PAT_1` | your classic token (store it as a secret) |
 | `WHITELIST` | `machfudn` |
 | `GITHUB_USERNAME` | `machfudn` |
-| `SITE_URL` | domain produksi, tanpa trailing slash |
+| `SITE_URL` | production domain, without a trailing slash |
 | `CACHE_SECONDS` | `21600` |
 | `FETCH_MULTI_PAGE_STARS` | `true` |
-| `EXCLUDE_REPO` | opsional, nama repo dipisahkan koma |
+| `EXCLUDE_REPO` | optional, comma-separated repository names |
 
-5. Deploy. Setelah mendapat domain seperti `https://github-readme-stats-machfudn.vercel.app`, isi `SITE_URL` dengan domain tersebut (atau domain custom Anda).
-6. **Redeploy** setelah menambah atau mengubah env. Perubahan env tidak berlaku pada deployment lama.
-7. Tes produksi tanpa parameter username:
+5. Deploy. After you receive a domain such as `https://github-readme-stats-machfudn.vercel.app`, set `SITE_URL` to that domain (or your custom domain).
+6. **Redeploy** after adding or changing environment variables. New values do not apply to an existing deployment.
+7. Test production without the username parameter:
 
 ```text
-https://DOMAIN-ANDA/api
-https://DOMAIN-ANDA/api/top-langs/
+https://YOUR-DOMAIN/api
+https://YOUR-DOMAIN/api/top-langs/
 ```
 
-Jika memakai Preview Deployment, tambahkan env yang sama untuk environment Preview. Untuk produksi, pastikan nilai yang dipakai adalah nilai **Production**. Jangan mengaktifkan Vercel Authentication/Deployment Protection pada URL kartu, karena GitHub tidak dapat mengambil gambar dari deployment yang terlindungi.
+If you use Preview Deployments, add the same variables to the Preview environment. For production, make sure the **Production** values are the ones in use. Do not enable Vercel Authentication/Deployment Protection on the card URL, because GitHub cannot fetch images from a protected deployment.
 
-## 8. Generate snippet README
+## 8. Generate the README snippet
 
-Pastikan `.env` sudah berisi `SITE_URL` dan variabel `README_*` yang diinginkan. Jalankan:
+Make sure `.env` contains `SITE_URL` and the desired `README_*` variables. Run:
 
 ```powershell
 npm run readme:snippet
 ```
 
-Perintah ini mencetak blok Markdown/HTML ke terminal. Contoh ringkasnya:
+The command prints a Markdown/HTML block to the terminal. Short example:
 
 ```markdown
 <!-- github-readme-stats:start -->
-<a href="https://github.com/machfudn"><img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=transparent&locale=id&include_all_commits=true" alt="GitHub Stats machfudn" /></a>
-<a href="https://github.com/machfudn?tab=repositories"><img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=transparent&locale=id" alt="Top Languages machfudn" /></a>
+<a href="https://github.com/machfudn"><img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=transparent&locale=en&include_all_commits=true" alt="GitHub Stats machfudn" /></a>
+<a href="https://github.com/machfudn?tab=repositories"><img height="180" align="center" src="https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=transparent&locale=en" alt="Top Languages machfudn" /></a>
 <!-- github-readme-stats:end -->
 ```
 
-Untuk menulis langsung ke file:
+To write directly to a file:
 
 ```powershell
 node scripts/print-readme.mjs --write PROFILE_README.md
 ```
 
-`--write` menyisipkan blok di antara marker `github-readme-stats:start/end`. Jika marker sudah ada, hanya blok itu yang diganti, sehingga isi README lain tetap aman.
+`--write` inserts the block between the `github-readme-stats:start/end` markers. If the markers already exist, only that block is replaced, so the rest of the README stays safe.
 
 > [!WARNING]
-> Jangan menimpa `readme.md` resmi proyek dengan hasil generator. Tulis ke file terpisah seperti `PROFILE_README.md` atau `README.cards.md`, lalu salin blok ke README repo profil `machfudn/machfudn`. Periksa isi file sebelum commit.
+> Do not overwrite the project's official `readme.md` with the generator output. Write to a separate file such as `PROFILE_README.md` or `README.cards.md`, then copy the block into the `machfudn/machfudn` profile repository README. Review the file before committing.
 
-## 9. Kustomisasi tampilan
+## 9. Display customization
 
-Parameter ditambahkan ke query string. Contoh memakai domain `https://github-readme-stats-machfudn.vercel.app`; ganti dengan domain Anda.
+Parameters are added to the query string. The examples use `https://github-readme-stats-machfudn.vercel.app`; replace it with your own domain.
 
-| Kebutuhan | Parameter | Contoh nilai |
+| Need | Parameter | Example value |
 | --- | --- | --- |
-| Tema | `theme` | `radical`, `tokyonight`, `dark`, `transparent` |
-| Bahasa kartu | `locale` | `id`, `en`, `es`, `ja` |
-| Sembunyikan stat | `hide` | `issues,prs` |
-| Tampilkan stat tambahan | `show` | `reviews,prs_merged` |
-| Ikon | `show_icons` | `true` |
-| Judul khusus | `custom_title` | `Statistik%20Machfud` |
-| Semua commit | `include_all_commits` | `true` |
-| Layout bahasa | `layout` | `compact`, `donut`, `donut-vertical`, `pie` |
-| Jumlah bahasa | `langs_count` | `1` sampai `20` |
-| Sembunyikan border | `hide_border` | `true` |
-| Lebar kartu | `card_width` | `400` |
+| Theme | `theme` | `radical`, `tokyonight`, `dark`, `transparent` |
+| Card language | `locale` | `en`, `id`, `es`, `ja` |
+| Hide stats | `hide` | `issues,prs` |
+| Show extra stats | `show` | `reviews,prs_merged` |
+| Icons | `show_icons` | `true` |
+| Custom title | `custom_title` | `Machfud%27s%20Stats` |
+| All commits | `include_all_commits` | `true` |
+| Language layout | `layout` | `compact`, `donut`, `donut-vertical`, `pie` |
+| Language count | `langs_count` | `1` to `20` |
+| Hide border | `hide_border` | `true` |
+| Card width | `card_width` | `400` |
 
-Contoh URL:
+Example URLs:
 
 ```text
-https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=tokyonight&locale=id&include_all_commits=true&hide=issues
-https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=tokyonight&locale=id&custom_title=Bahasa%20Favorit
+https://github-readme-stats-machfudn.vercel.app/api?show_icons=true&theme=tokyonight&locale=en&include_all_commits=true&hide=issues
+https://github-readme-stats-machfudn.vercel.app/api/top-langs/?layout=compact&langs_count=8&theme=tokyonight&locale=en&custom_title=Top%20Languages
 https://github-readme-stats-machfudn.vercel.app/api/pin/?repo=github-readme-stats&theme=tokyonight
 ```
 
-Contoh terakhir hanya untuk repo **publik**. Untuk repo private, jangan gunakan `/api/pin/`.
+The last example is for **public** repositories only. Do not use `/api/pin/` for private repositories.
 
-Daftar tema lengkap ada di `themes/README.md`; daftar locale ada di `readme.md` bagian **Available locales**. Untuk tema yang mengikuti mode gelap/terang GitHub, tambahkan `#gh-dark-mode-only` atau `#gh-light-mode-only` di akhir URL gambar.
+The full theme list is in `themes/README.md`; the locale list is in the **Available locales** section of `readme.md`. For themes that follow GitHub's dark/light mode, append `#gh-dark-mode-only` or `#gh-light-mode-only` to the image URL.
 
-## 10. Keamanan dan privasi
+## 10. Security and privacy
 
-- **`WHITELIST=machfudn` wajib di Vercel.** Tanpa whitelist, siapa pun dapat memakai instance dan kuota token Anda untuk username lain. Whitelist tidak menyembunyikan statistik publik `machfudn`; kartu yang sudah di-embed tetap publik.
-- Jangan commit `.env`. Verifikasi dengan `git check-ignore -v .env`; file itu sudah tercantum di `.gitignore`.
-- Gunakan token khusus dengan masa berlaku terbatas dan rotasi sebelum kedaluwarsa. Jika bocor: **revoke segera**, buat token baru, perbarui `PAT_1` di Vercel, lalu redeploy.
-- Jangan gunakan `/api/pin/` untuk repo private. Route ini menampilkan nama dan deskripsi repo, dan cache pihak ketiga dapat menyimpannya.
-- `CACHE_SECONDS=21600` mengurangi request ke GitHub, tetapi juga menunda pembaruan angka. Cache GitHub Camo dapat membuat gambar lama tetap muncul setelah README diubah.
-- Deployment kartu harus dapat diakses publik agar GitHub bisa mengambil gambar. Karena itu, perlindungan utama adalah agregasi data dan whitelist, bukan URL rahasia.
+- **`WHITELIST=machfudn` is required on Vercel.** Without a whitelist, anyone can use your instance and token quota for other usernames. The whitelist does not hide `machfudn`'s public statistics; embedded cards remain public.
+- Do not commit `.env`. Verify with `git check-ignore -v .env`; the file is already listed in `.gitignore`.
+- Use a dedicated token with a limited lifetime and rotate it before expiration. If it leaks: **revoke it immediately**, create a new token, update `PAT_1` on Vercel, then redeploy.
+- Do not use `/api/pin/` for private repositories. This route exposes the repository name and description, and third-party caches may store them.
+- `CACHE_SECONDS=21600` reduces GitHub requests but also delays updates. GitHub Camo's cache may keep an old image visible after the README changes.
+- The card deployment must be publicly accessible so GitHub can fetch images. The main protection is therefore data aggregation and the whitelist, not a secret URL.
 
 ## 11. Troubleshooting
 
-| Gejala | Penyebab umum | Solusi |
+| Symptom | Common cause | Solution |
 | --- | --- | --- |
-| `No GitHub API tokens found` | `PAT_1` kosong, salah nama, atau `.env` tidak terbaca | Isi `PAT_1`, restart server; di Vercel tambahkan env lalu redeploy. |
-| `Missing param: username` | `GITHUB_USERNAME` kosong atau deployment masih versi lama | Isi env, restart/redeploy; sementara tambahkan `?username=machfudn`. |
-| `Downtime due to GitHub API rate limiting` | Kuota GitHub API habis | Tunggu, naikkan cache, kurangi `FETCH_MULTI_PAGE_STARS`, atau gunakan token lain. |
-| Angka private rendah atau nol | Setting profil belum mengizinkan kontribusi private | Aktifkan **Include private contributions on my profile** di pengaturan profil GitHub. |
-| Commit private tetap tidak masuk | Memakai fine-grained token | Ganti dengan classic PAT scope `repo` + `read:user`. |
-| Env Vercel tidak berefek | Env hanya berlaku pada deployment baru | Redeploy environment **Production**, bukan hanya menyimpan env. |
-| Link/gambar di snippet salah | `SITE_URL` salah, memakai domain preview, atau ada trailing slash | Perbaiki ke domain produksi tanpa `/`, lalu generate ulang snippet; redeploy jika env Vercel diubah. |
-| Kartu masih menampilkan data lama | Cache `CACHE_SECONDS` atau cache GitHub Camo | Tunggu masa cache, turunkan `CACHE_SECONDS`, lalu redeploy. |
-| `This username is not whitelisted` | Meminta username selain `machfudn` | Hapus `?username=`, atau sesuaikan `WHITELIST` bila memang diperlukan. |
+| `No GitHub API tokens found` | `PAT_1` is empty, misnamed, or `.env` is not being read | Set `PAT_1`, restart the server; on Vercel add the variable and redeploy. |
+| `Missing param: username` | `GITHUB_USERNAME` is empty or the deployment is stale | Set the variable, restart/redeploy; temporarily add `?username=machfudn`. |
+| `Downtime due to GitHub API rate limiting` | GitHub API quota exhausted | Wait, increase the cache, reduce `FETCH_MULTI_PAGE_STARS`, or use another token. |
+| Private numbers are low or zero | The profile does not allow private contributions | Enable **Include private contributions on my profile** in GitHub profile settings. |
+| Private commits still do not appear | A fine-grained token is being used | Switch to a classic PAT with `repo` + `read:user` scopes. |
+| Vercel environment variables have no effect | Variables only apply to new deployments | Redeploy the **Production** environment; saving the variable alone is not enough. |
+| Snippet link/image is wrong | `SITE_URL` is wrong, uses a preview domain, or has a trailing slash | Fix it to the production domain without `/`, then regenerate the snippet; redeploy if the Vercel environment variable changed. |
+| Card still shows old data | `CACHE_SECONDS` or GitHub Camo cache | Wait for the cache to expire, lower `CACHE_SECONDS`, then redeploy. |
+| `This username is not whitelisted` | A username other than `machfudn` was requested | Remove `?username=`, or adjust `WHITELIST` if you really need another user. |
 
-Jika kartu error, buka URL langsung di browser (bukan hanya lewat README) untuk melihat pesan SVG. GitHub Camo terkadang menyembunyikan error asli.
+If a card shows an error, open the URL directly in a browser (not only through the README) to see the SVG message. GitHub Camo sometimes hides the original error.
 
-## 12. Catatan upstream dan migrasi
+## 12. Upstream notes and migration
 
-Repo `anuraghazra/github-readme-stats` sudah **tidak dirawat**. README upstream menunjuk successor aktif:
+The `anuraghazra/github-readme-stats` repository is **no longer maintained**. The upstream README points to an active successor:
 
-- **GitHub Stats Extended:** `https://github.com/stats-organization/github-stats-extended` — alternatif action ada di `stats-organization/github-readme-stats-action`.
+- **GitHub Stats Extended:** `https://github.com/stats-organization/github-stats-extended` — an alternative action is available at `stats-organization/github-readme-stats-action`.
 
-Instance publik upstream juga tidak disarankan untuk kebutuhan produksi atau data private. Fork ini tetap dapat dipakai, tetapi tidak menerima patch keamanan rutin.
+The public upstream instance is also not recommended for production or private data. This fork remains usable, but it does not receive regular security patches.
 
-Langkah migrasi ke GitHub Stats Extended:
+Migration steps to GitHub Stats Extended:
 
-1. Fork/deploy `stats-organization/github-stats-extended` ke proyek Vercel baru.
-2. Salin env yang sama: `PAT_1`, `WHITELIST`, `GITHUB_USERNAME` (jika didukung), `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, dan `EXCLUDE_REPO`.
-3. Tes `/api?username=machfudn`, `/api/top-langs/`, dan pin untuk repo publik.
-4. Ganti domain pada snippet README. Path `/api`, `/api/top-langs/`, dan `/api/pin/` kompatibel, jadi biasanya hanya host yang berubah.
-5. Setelah yakin, revoke token lama dan hapus deployment lama.
+1. Fork/deploy `stats-organization/github-stats-extended` to a new Vercel project.
+2. Copy the same environment variables: `PAT_1`, `WHITELIST`, `GITHUB_USERNAME` (if supported), `CACHE_SECONDS`, `FETCH_MULTI_PAGE_STARS`, and `EXCLUDE_REPO`.
+3. Test `/api?username=machfudn`, `/api/top-langs/`, and pin for public repositories.
+4. Change the domain in the README snippet. The `/api`, `/api/top-langs/`, and `/api/pin/` paths are compatible, so usually only the host changes.
+5. Once confirmed, revoke the old token and remove the old deployment.
 
-Perubahan lokal seperti fallback `GITHUB_USERNAME` dan `scripts/print-readme.mjs` adalah tambahan fork ini. Successor belum tentu memiliki perilaku fallback yang sama; setelah migrasi, gunakan `?username=machfudn` secara eksplisit bila diperlukan. Cadangkan perubahan lokal sebelum memindahkan repo.
+Local changes such as the `GITHUB_USERNAME` fallback and `scripts/print-readme.mjs` are additions from this fork. The successor may not have the same fallback behavior; after migrating, use `?username=machfudn` explicitly if needed. Back up local changes before moving the repository.

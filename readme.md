@@ -1,8 +1,8 @@
 > [!NOTE]
-> Ini adalah fork self-hosted milik **machfudn** untuk menampilkan statistik repo
-> publik dan private sebagai angka agregat di Vercel. Panduan konfigurasi ada di
-> [CUSTOMIZE.md](./CUSTOMIZE.md). Proyek upstream sudah tidak dirawat; lihat
-> catatan deprecation di bawah.
+> This is **machfudn**'s self-hosted fork for displaying public and private
+> repository statistics as aggregate numbers on Vercel. See
+> [CUSTOMIZE.md](./CUSTOMIZE.md) for configuration instructions. The upstream
+> project is no longer maintained; see the deprecation notice below.
 
 <div align="center">
   <img src="https://res.cloudinary.com/anuraghazra/image/upload/v1594908242/logo_ccswme.svg" width="100px" alt="GitHub Readme Stats" />
