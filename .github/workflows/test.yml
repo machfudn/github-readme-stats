@@ -26,15 +26,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - name: Install & Test
-        run: |
-          npm ci
-          npm run test
+      - name: Install Dependencies
+        run: npm ci
 
-      - name: Run ESLint
-        run: |
-          npm run lint
+      - name: Run Typecheck
+        run: npm run typecheck
 
+      - name: Run Oxlint
+        run: npm run lint
+
+      - name: Run Test Suites
+        run: npm run test
       - name: Run bench tests
         run: |
           npm run bench
