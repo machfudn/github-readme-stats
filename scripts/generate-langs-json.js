@@ -27,4 +27,8 @@ axios
       LANGS_FILEPATH,
       JSON.stringify(languageColors, null, "    "),
     );
+    fs.writeFileSync(
+      "./src/common/languageColors.js",
+      `export default ${JSON.stringify(languageColors, null, "    ")};\n`,
+    );
   });
