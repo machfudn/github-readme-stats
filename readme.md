@@ -1,3 +1,9 @@
+> [!NOTE]
+> This is **machfudn**'s self-hosted fork for displaying public and private
+> repository statistics as aggregate numbers on Vercel. See
+> [CUSTOMIZE.md](./CUSTOMIZE.md) for configuration instructions. The upstream
+> project is no longer maintained; see the deprecation notice below.
+
 <div align="center">
   <img src="https://res.cloudinary.com/anuraghazra/image/upload/v1594908242/logo_ccswme.svg" width="100px" alt="GitHub Readme Stats Logo" />
   <h1>GitHub Readme Stats</h1>

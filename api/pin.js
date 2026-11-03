@@ -12,6 +12,7 @@ import {
   MissingParamError,
   retrieveSecondaryMessage,
 } from "../src/common/error.js";
+import { resolveUsername } from "../src/common/envs.js";
 import { parseBoolean } from "../src/common/ops.js";
 import { renderError } from "../src/common/render.js";
 import { fetchRepo } from "../src/fetchers/repo.js";
@@ -20,7 +21,7 @@ import { isLocaleAvailable } from "../src/translations.js";
 // @ts-ignore
 export default async (req, res) => {
   const {
-    username,
+    username: requestedUsername,
     repo,
     hide_border,
     title_color,
@@ -35,6 +36,7 @@ export default async (req, res) => {
     border_color,
     description_lines_count,
   } = req.query;
+  const username = resolveUsername(requestedUsername);
 
   res.setHeader("Content-Type", "image/svg+xml");
 

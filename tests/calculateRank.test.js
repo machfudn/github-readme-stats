@@ -29,8 +29,9 @@ describe("Test calculateRank", () => {
       stars: 25,
       followers: 5,
     });
+
     expect(rank.level).toBe("B-");
-    expect(rank.percentile).toBeCloseTo(65.029, 2);
+    expect(rank.percentile).toBeCloseTo(65.02918514848255, 10);
   });
 
   it("median user gets B+ rank", () => {

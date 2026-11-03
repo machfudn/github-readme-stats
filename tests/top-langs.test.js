@@ -70,8 +70,16 @@ const langs = {
 
 const mock = new MockAdapter(axios);
 
+const originalGithubUsername = process.env.GITHUB_USERNAME;
+
 afterEach(() => {
   mock.reset();
+
+  if (originalGithubUsername === undefined) {
+    delete process.env.GITHUB_USERNAME;
+  } else {
+    process.env.GITHUB_USERNAME = originalGithubUsername;
+  }
 });
 
 describe("Test /api/top-langs", () => {
@@ -80,6 +88,23 @@ describe("Test /api/top-langs", () => {
       query: {
         username: "anuraghazra",
       },
+    };
+    const res = {
+      setHeader: jest.fn(),
+      send: jest.fn(),
+    };
+    mock.onPost("https://api.github.com/graphql").reply(200, data_langs);
+
+    await topLangs(req, res);
+
+    expect(res.setHeader).toHaveBeenCalledWith("Content-Type", "image/svg+xml");
+    expect(res.send).toHaveBeenCalledWith(renderTopLanguages(langs));
+  });
+
+  it("should use GITHUB_USERNAME when username is missing", async () => {
+    process.env.GITHUB_USERNAME = "machfudn";
+    const req = {
+      query: {},
     };
     const res = {
       setHeader: jest.fn(),

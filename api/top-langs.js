@@ -12,6 +12,7 @@ import {
   MissingParamError,
   retrieveSecondaryMessage,
 } from "../src/common/error.js";
+import { resolveUsername } from "../src/common/envs.js";
 import { parseArray, parseBoolean } from "../src/common/ops.js";
 import { renderError } from "../src/common/render.js";
 import { fetchTopLanguages } from "../src/fetchers/top-languages.js";
@@ -20,7 +21,7 @@ import { isLocaleAvailable } from "../src/translations.js";
 // @ts-ignore
 export default async (req, res) => {
   const {
-    username,
+    username: requestedUsername,
     hide,
     hide_title,
     hide_border,
@@ -43,6 +44,7 @@ export default async (req, res) => {
     hide_progress,
     stats_format,
   } = req.query;
+  const username = resolveUsername(requestedUsername);
   res.setHeader("Content-Type", "image/svg+xml");
 
   const access = guardAccess({

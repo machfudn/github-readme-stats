@@ -32,34 +32,61 @@ export const getEnv = (key) => {
   }
   return undefined;
 };
+
+/**
+ * Parse a comma-separated environment variable into a trimmed array.
+ *
+ * @param {string | undefined} value Comma-separated value.
+ * @returns {string[] | undefined} Parsed values, or undefined when empty.
+ */
+const parseList = (value) => {
+  if (!value) {
+    return undefined;
+  }
+
+  const items = value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return items.length > 0 ? items : undefined;
+};
+
 export const getWhitelist = () => {
-  const val = getEnv("WHITELIST");
-  return val ? val.split(",") : undefined;
+  return parseList(getEnv("WHITELIST"));
 };
 
 export const getGistWhitelist = () => {
-  const val = getEnv("GIST_WHITELIST");
-  return val ? val.split(",") : undefined;
+  return parseList(getEnv("GIST_WHITELIST"));
 };
 
 export const getExcludeRepositories = () => {
-  const val = getEnv("EXCLUDE_REPO");
-  return val ? val.split(",") : [];
+  return parseList(getEnv("EXCLUDE_REPO")) ?? [];
 };
 
-const whitelist =
-  typeof process !== "undefined" && process.env?.WHITELIST
-    ? process.env.WHITELIST.split(",")
-    : undefined;
+/**
+ * Resolve the username from the query string, falling back to
+ * the GITHUB_USERNAME environment variable.
+ *
+ * @param {string | undefined} username Username from the query string.
+ * @returns {string | undefined} The username to fetch.
+ */
+export const resolveUsername = (username) => {
+  const fallback = getEnv("GITHUB_USERNAME")?.trim();
+  return username || fallback || undefined;
+};
 
-const gistWhitelist =
-  typeof process !== "undefined" && process.env?.GIST_WHITELIST
-    ? process.env.GIST_WHITELIST.split(",")
-    : undefined;
+const whitelist = parseList(
+  typeof process !== "undefined" ? process.env?.WHITELIST : undefined,
+);
+
+const gistWhitelist = parseList(
+  typeof process !== "undefined" ? process.env?.GIST_WHITELIST : undefined,
+);
 
 const excludeRepositories =
-  typeof process !== "undefined" && process.env?.EXCLUDE_REPO
-    ? process.env.EXCLUDE_REPO.split(",")
-    : [];
+  parseList(
+    typeof process !== "undefined" ? process.env?.EXCLUDE_REPO : undefined,
+  ) ?? [];
 
 export { whitelist, gistWhitelist, excludeRepositories };
