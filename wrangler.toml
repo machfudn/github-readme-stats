@@ -1,7 +1,11 @@
 name = "github-readme-stats"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = "public"
+main = "src/worker.ts"
+
+[assets]
+directory = "public"
+binding = "ASSETS"
 
 [vars]
 CACHE_SECONDS = "3600"

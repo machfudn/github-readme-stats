@@ -17,3 +17,6 @@ benchmarks
 *.code-workspace
 
 .vercel
+/.wrangler
+_worker.bundle
+.dev.vars
