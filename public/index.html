@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Readme Stats - Cloudflare Pages</title>
+    <style>
+      :root {
+        --bg: #0d1117;
+        --card-bg: #161b22;
+        --border: #30363d;
+        --text: #c9d1d9;
+        --accent: #58a6ff;
+        --accent-hover: #79c0ff;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 2rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .container {
+        max-width: 800px;
+        width: 100%;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      h1 {
+        color: #fff;
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+      }
+      p.subtitle {
+        color: #8b949e;
+        font-size: 1.1rem;
+        margin-top: 0;
+      }
+      .links {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-block;
+        background: #238636;
+        color: #fff;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .btn:hover {
+        background: #2ea043;
+      }
+      .btn.secondary {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--accent);
+      }
+      .btn.secondary:hover {
+        border-color: #8b949e;
+      }
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .card h2 {
+        margin-top: 0;
+        color: #fff;
+        font-size: 1.3rem;
+      }
+      code {
+        background: rgba(110, 118, 129, 0.4);
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #f0f6fc;
+      }
+      ul {
+        padding-left: 1.2rem;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>GitHub Readme Stats</h1>
+        <p class="subtitle">
+          Powered by Hono &amp; TypeScript on Cloudflare Pages
+        </p>
+        <div class="links">
+          <a class="btn" href="/ui">Swagger UI Documentation</a>
+          <a class="btn secondary" href="/doc">OpenAPI JSON</a>
+          <a
+            class="btn secondary"
+            href="https://github.com/anuraghazra/github-readme-stats"
+            target="_blank"
+            rel="noreferrer"
+            >Original Project</a
+          >
+        </div>
+      </header>
+
+      <div class="card">
+        <h2>API Endpoints</h2>
+        <ul>
+          <li>
+            <code>GET /api?username=:username</code> &mdash; Generate stats card
+          </li>
+          <li>
+            <code>GET /api/pin?username=:user&amp;repo=:repo</code> &mdash;
+            Generate repository pin card
+          </li>
+          <li>
+            <code>GET /api/top-langs?username=:username</code> &mdash; Generate
+            top languages card
+          </li>
+          <li>
+            <code>GET /api/wakatime?username=:username</code> &mdash; Generate
+            WakaTime stats card
+          </li>
+          <li>
+            <code>GET /api/gist?id=:gist_id</code> &mdash; Generate Gist card
+          </li>
+          <li>
+            <code>GET /api/status/up</code> &mdash; Personal Access Token (PAT)
+            health check
+          </li>
+          <li>
+            <code>GET /api/status/pat-info</code> &mdash; Detailed PAT
+            diagnostics
+          </li>
+          <li>
+            <code>GET /ui</code> &mdash; Interactive Swagger UI documentation
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Cloudflare Pages Deployment</h2>
+        <p>
+          Configure the following Environment Variables / Secrets in Cloudflare
+          Pages dashboard:
+        </p>
+        <ul>
+          <li>
+            <code>PAT_1</code>, <code>PAT_2</code>, etc. &mdash; GitHub Personal
+            Access Tokens (automatically rotated on rate limit)
+          </li>
+          <li>
+            <code>CACHE_SECONDS</code> &mdash; Custom CDN cache time (optional)
+          </li>
+          <li>
+            <code>WHITELIST</code> &mdash; Restrict allowed usernames (optional)
+          </li>
+          <li>
+            <code>EXCLUDE_REPO</code> &mdash; Repositories to exclude from stats
+            (optional)
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

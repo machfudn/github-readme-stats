@@ -1,0 +1,12 @@
+name = "github-readme-stats"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "public"
+
+[vars]
+CACHE_SECONDS = "3600"
+GITHUB_USERNAME = "machfudn"
+README_THEME = "transparent"
+README_LOCALE = "en"
+README_INCLUDE_ALL_COMMITS = "true"
+README_LANGS_COUNT = "8"
