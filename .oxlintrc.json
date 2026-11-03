@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["import", "jsdoc", "jest"],
+  "categories": {
+    "correctness": "deny"
+  },
+  "rules": {
+    "no-control-regex": "off",
+    "no-unused-expressions": "error",
+    "jsdoc/no-defaults": "off",
+    "jsdoc/check-tag-names": "off",
+    "jest/expect-expect": "off",
+    "jest/no-conditional-expect": "off",
+    "jest/no-export": "off"
+  }
+}

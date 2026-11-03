@@ -2,14 +2,31 @@
 
 import { CustomError } from "./error.js";
 import { logger } from "./log.js";
+import { getEnv, getRuntimeEnv } from "./envs.js";
 
-// Script variables.
+// Helper to calculate total available PATs
+const getPATsCount = () => {
+  const pKeys =
+    typeof process !== "undefined" && process.env
+      ? Object.keys(process.env)
+      : [];
+  const rKeys = Object.keys(getRuntimeEnv());
+  const allKeys = new Set([...pKeys, ...rKeys]);
+  return Array.from(allKeys).filter((key) => /PAT_\d*$/.exec(key)).length;
+};
 
-// Count the number of GitHub API tokens available.
-const PATs = Object.keys(process.env).filter((key) =>
-  /PAT_\d*$/.exec(key),
-).length;
-const RETRIES = process.env.NODE_ENV === "test" ? 7 : PATs;
+const getRetriesLimit = () => {
+  const isTest =
+    getEnv("NODE_ENV") === "test" ||
+    (typeof process !== "undefined" && process.env?.NODE_ENV === "test");
+  return isTest ? 7 : getPATsCount();
+};
+
+const getPATToken = (index) => {
+  return getEnv(`PAT_${index}`);
+};
+
+const RETRIES = getRetriesLimit();
 
 /**
  * @typedef {import("axios").AxiosResponse} AxiosResponse Axios response.
@@ -25,11 +42,12 @@ const RETRIES = process.env.NODE_ENV === "test" ? 7 : PATs;
  * @returns {Promise<any>} The response from the fetcher function.
  */
 const retryer = async (fetcher, variables, retries = 0) => {
-  if (!RETRIES) {
+  const retriesLimit = getRetriesLimit();
+  if (!retriesLimit) {
     throw new CustomError("No GitHub API tokens found", CustomError.NO_TOKENS);
   }
 
-  if (retries > RETRIES) {
+  if (retries > retriesLimit) {
     throw new CustomError(
       "Downtime due to GitHub API rate limiting",
       CustomError.MAX_RETRY,
@@ -41,7 +59,7 @@ const retryer = async (fetcher, variables, retries = 0) => {
     let response = await fetcher(
       variables,
       // @ts-ignore
-      process.env[`PAT_${retries + 1}`],
+      getPATToken(retries + 1),
       // used in tests for faking rate limit
       retries,
     );

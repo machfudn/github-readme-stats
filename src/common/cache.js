@@ -1,6 +1,7 @@
 // @ts-check
 
 import { clampValue } from "./ops.js";
+import { getEnv } from "./envs.js";
 
 const MIN = 60;
 const HOUR = 60 * MIN;
@@ -73,8 +74,9 @@ const CACHE_TTL = {
 const resolveCacheSeconds = ({ requested, def, min, max }) => {
   let cacheSeconds = clampValue(isNaN(requested) ? def : requested, min, max);
 
-  if (process.env.CACHE_SECONDS) {
-    const envCacheSeconds = parseInt(process.env.CACHE_SECONDS, 10);
+  const cacheSecondsEnv = getEnv("CACHE_SECONDS");
+  if (cacheSecondsEnv) {
+    const envCacheSeconds = parseInt(cacheSecondsEnv, 10);
     if (!isNaN(envCacheSeconds)) {
       cacheSeconds = envCacheSeconds;
     }
@@ -105,7 +107,7 @@ const disableCaching = (res) => {
  * @param {number} cacheSeconds The cache seconds to set in the headers.
  */
 const setCacheHeaders = (res, cacheSeconds) => {
-  if (cacheSeconds < 1 || process.env.NODE_ENV === "development") {
+  if (cacheSeconds < 1 || getEnv("NODE_ENV") === "development") {
     disableCaching(res);
     return;
   }
@@ -124,12 +126,11 @@ const setCacheHeaders = (res, cacheSeconds) => {
  * @param {any} res The response object.
  */
 const setErrorCacheHeaders = (res) => {
-  const envCacheSeconds = process.env.CACHE_SECONDS
-    ? parseInt(process.env.CACHE_SECONDS, 10)
-    : NaN;
+  const cacheSecondsEnv = getEnv("CACHE_SECONDS");
+  const envCacheSeconds = cacheSecondsEnv ? parseInt(cacheSecondsEnv, 10) : NaN;
   if (
     (!isNaN(envCacheSeconds) && envCacheSeconds < 1) ||
-    process.env.NODE_ENV === "development"
+    getEnv("NODE_ENV") === "development"
   ) {
     disableCaching(res);
     return;

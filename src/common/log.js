@@ -1,5 +1,7 @@
 // @ts-check
 
+import { getEnv } from "./envs.js";
+
 const noop = () => {};
 
 /**
@@ -8,7 +10,7 @@ const noop = () => {};
  * @type {Console | {log: () => void, error: () => void}}
  */
 const logger =
-  process.env.NODE_ENV === "test" ? { log: noop, error: noop } : console;
+  getEnv("NODE_ENV") === "test" ? { log: noop, error: noop } : console;
 
 export { logger };
 export default logger;

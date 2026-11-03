@@ -2,7 +2,12 @@
 
 import { renderError } from "./render.js";
 import { blacklist } from "./blacklist.js";
-import { whitelist, gistWhitelist } from "./envs.js";
+import {
+  whitelist,
+  gistWhitelist,
+  getWhitelist,
+  getGistWhitelist,
+} from "./envs.js";
 
 const NOT_WHITELISTED_USERNAME_MESSAGE = "This username is not whitelisted";
 const NOT_WHITELISTED_GIST_MESSAGE = "This gist ID is not whitelisted";
@@ -25,7 +30,10 @@ const guardAccess = ({ res, id, type, colors }) => {
     );
   }
 
-  const currentWhitelist = type === "gist" ? gistWhitelist : whitelist;
+  const currentWhitelist =
+    type === "gist"
+      ? (getGistWhitelist() ?? gistWhitelist)
+      : (getWhitelist() ?? whitelist);
   const notWhitelistedMsg =
     type === "gist"
       ? NOT_WHITELISTED_GIST_MESSAGE

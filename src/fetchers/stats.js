@@ -1,17 +1,14 @@
 // @ts-check
 
 import axios from "axios";
-import * as dotenv from "dotenv";
 import githubUsernameRegex from "github-username-regex";
 import { calculateRank } from "../calculateRank.js";
 import { retryer } from "../common/retryer.js";
 import { logger } from "../common/log.js";
-import { excludeRepositories } from "../common/envs.js";
+import { excludeRepositories, getEnv } from "../common/envs.js";
 import { CustomError, MissingParamError } from "../common/error.js";
 import { wrapTextMultiline } from "../common/fmt.js";
 import { request } from "../common/http.js";
-
-dotenv.config();
 
 // GraphQL queries.
 const GRAPHQL_REPOS_FIELD = `
@@ -149,7 +146,7 @@ const statsFetcher = async ({
       (node) => node.stargazers.totalCount !== 0,
     );
     hasNextPage =
-      process.env.FETCH_MULTI_PAGE_STARS === "true" &&
+      getEnv("FETCH_MULTI_PAGE_STARS") === "true" &&
       repoNodes.length === repoNodesWithStars.length &&
       res.data.data.user.repositories.pageInfo.hasNextPage;
     endCursor = res.data.data.user.repositories.pageInfo.endCursor;
@@ -161,7 +158,7 @@ const statsFetcher = async ({
 /**
  * Fetch total commits using the REST API.
  *
- * @param {object} variables Fetcher variables.
+ * @param {{ login: string }} variables Fetcher variables.
  * @param {string} token GitHub token.
  * @returns {Promise<import('axios').AxiosResponse>} Axios response.
  *

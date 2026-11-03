@@ -4,14 +4,14 @@
     "features": {
         "ghcr.io/devcontainers/features/node:1": { "version": "22" }
     },
-    "forwardPorts": [3000],
+    "forwardPorts": [8788],
     "portsAttributes": {
-        "3000": { "label": "HTTP" }
+        "8788": { "label": "Wrangler Pages Dev" }
     },
     "appPort": [],
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "npm install -g vercel",
+    "postCreateCommand": "npm install -g wrangler",
 
     // Use 'postStartCommand' to run commands after the container is started.
     "postStartCommand": "hostname dev && npm install",

@@ -1,0 +1,5 @@
+# Cloudflare Pages / Workers local environment secrets
+# Copy to .dev.vars for local testing with wrangler
+# Only secret tokens go here. Non-secret variables belong in wrangler.toml [vars]
+PAT_1=ghp_yourPersonalAccessTokenHere
+# PAT_2=ghp_yourSecondAccessTokenForRotation

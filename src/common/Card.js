@@ -1,5 +1,6 @@
 // @ts-check
 
+import { getEnv } from "./envs.js";
 import { encodeHTML } from "./html.js";
 import { flexLayout } from "./render.js";
 
@@ -230,7 +231,7 @@ class Card {
           }
           ${this.css}
 
-          ${process.env.NODE_ENV === "test" ? "" : this.getAnimations()}
+          ${getEnv("NODE_ENV") === "test" ? "" : this.getAnimations()}
           ${
             this.animations === false
               ? `* { animation-duration: 0s !important; animation-delay: 0s !important; }`

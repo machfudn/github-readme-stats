@@ -1,6 +1,7 @@
 // @ts-check
 
 import { Card } from "../common/Card.js";
+import { getEnv } from "../common/envs.js";
 import { getCardColors } from "../common/color.js";
 import { CustomError } from "../common/error.js";
 import { kFormatter } from "../common/fmt.js";
@@ -223,7 +224,7 @@ const getStyles = ({
       transform: rotate(-90deg);
       animation: rankAnimation 1s forwards ease-in-out;
     }
-    ${process.env.NODE_ENV === "test" ? "" : getProgressAnimation({ progress })}
+    ${getEnv("NODE_ENV") === "test" ? "" : getProgressAnimation({ progress })}
   `;
 };
 

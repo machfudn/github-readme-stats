@@ -1,4 +1,6 @@
-.vercel
+.wrangler/
+_worker.bundle
+.dev.vars
 .env
 .env.local
 .env.*.local
@@ -7,7 +9,6 @@ node_modules
 .idea/
 coverage
 benchmarks
-vercel_token
 
 # IDE
 .vscode/*
