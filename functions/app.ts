@@ -245,6 +245,13 @@ app.openapi(patInfoRoute, handleApi(patInfoHandler));
 // Alias /api/stats to /api
 app.get("/api/stats", handleApi(statsHandler));
 
+// Backward-compatibility aliases (trailing slash & /api/stats)
+app.get("/api/", handleApi(statsHandler));
+app.get("/api/pin/", handleApi(pinHandler));
+app.get("/api/top-langs/", handleApi(topLangsHandler));
+app.get("/api/wakatime/", handleApi(wakatimeHandler));
+app.get("/api/gist/", handleApi(gistHandler));
+
 // Expose OpenAPI JSON document
 app.doc("/doc", {
   openapi: "3.0.0",
