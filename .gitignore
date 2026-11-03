@@ -1,11 +1,12 @@
-.vercel
+.wrangler/
+_worker.bundle
+.dev.vars
 .env
 node_modules
 *.lock
 .idea/
 coverage
 benchmarks
-vercel_token
 
 # IDE
 .vscode/*
