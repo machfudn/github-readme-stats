@@ -1,6 +1,6 @@
 // @ts-check
 
-import { MissingParamError } from "../common/error.js";
+import { MissingParamError, CustomError } from "../common/error.js";
 import { request } from "../common/http.js";
 import { retryer } from "../common/retryer.js";
 
@@ -79,7 +79,13 @@ const fetchRepo = async (username, reponame) => {
 
   let res = await retryer(fetcher, { login: username, repo: reponame });
 
-  const data = res.data.data;
+  const data = res.data?.data;
+  if (!data) {
+    throw new CustomError(
+      res.data?.message || "Could not fetch repository data.",
+      CustomError.GRAPHQL_ERROR,
+    );
+  }
 
   if (!data.user && !data.organization) {
     throw new Error("Not found");

@@ -111,6 +111,14 @@ const getPATInfo = async (fetcher, variables) => {
         details[pat] = {
           status: "suspended",
         };
+      } else if (err.response) {
+        details[pat] = {
+          status: "error",
+          error: {
+            type: `HTTP_${err.response.status}`,
+            message: err.response?.data?.message || err.message,
+          },
+        };
       } else {
         throw err;
       }

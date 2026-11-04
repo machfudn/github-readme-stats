@@ -201,6 +201,17 @@ describe("Test fetchStats", () => {
     );
   });
 
+  it("should throw CustomError when response data user is missing", async () => {
+    mock.reset();
+    mock.onPost("https://api.github.com/graphql").reply(403, {
+      message: "Resource not accessible by personal access token",
+    });
+
+    await expect(fetchStats("anuraghazra")).rejects.toThrow(
+      "Resource not accessible by personal access token",
+    );
+  });
+
   it("should fetch total commits", async () => {
     mock
       .onGet("https://api.github.com/search/commits?q=author:anuraghazra")

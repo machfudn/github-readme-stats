@@ -91,6 +91,13 @@ const fetchTopLanguages = async (
     );
   }
 
+  if (!res.data?.data?.user) {
+    throw new CustomError(
+      res.data?.message || "Could not fetch user languages data.",
+      CustomError.GRAPHQL_ERROR,
+    );
+  }
+
   let repoNodes = res.data.data.user.repositories.nodes;
   /** @type {Record<string, boolean>} */
   let repoToHide = {};

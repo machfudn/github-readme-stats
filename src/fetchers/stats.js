@@ -129,7 +129,7 @@ const statsFetcher = async ({
       startTime,
     };
     let res = await retryer(fetcher, variables);
-    if (res.data.errors) {
+    if (res.data?.errors || !res.data?.data?.user) {
       return res;
     }
 
@@ -172,6 +172,7 @@ const fetchTotalCommits = (variables, token) => {
       "Content-Type": "application/json",
       Accept: "application/vnd.github.cloak-preview",
       Authorization: `token ${token}`,
+      "User-Agent": "github-readme-stats",
     },
   });
 };
@@ -274,6 +275,13 @@ const fetchStats = async (
     }
     throw new CustomError(
       "Something went wrong while trying to retrieve the stats data using the GraphQL API.",
+      CustomError.GRAPHQL_ERROR,
+    );
+  }
+
+  if (!res.data?.data?.user) {
+    throw new CustomError(
+      res.data?.message || "Could not fetch user stats data.",
       CustomError.GRAPHQL_ERROR,
     );
   }
