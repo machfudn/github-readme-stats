@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "title": "GitHub Readme Stats - Card Builder & API Docs",
+    "brand": "GitHub Readme Stats",
+    "subtitle": "Interactive SVG card builder, live output preview, copy-ready embed source, and Hono + TypeScript API reference for Cloudflare Pages & Workers."
+  },
+  "nav": {
+    "playground": "Builder",
+    "endpoints": "API Docs",
+    "deployment": "Deployment",
+    "swagger": "Swagger UI",
+    "openapi": "OpenAPI JSON",
+    "sourceRepo": "Original Project"
+  },
+  "toggles": {
+    "themeLabel": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode",
+    "langLabel": "Language",
+    "langEn": "EN",
+    "langId": "ID"
+  },
+  "aria": {
+    "langGroup": "Interface language",
+    "navSections": "Page sections",
+    "playground": "Card Playground",
+    "cardEndpoint": "Card endpoint",
+    "canvasBg": "Preview canvas background",
+    "codeFormat": "Generated code format",
+    "docsFilter": "Filter API endpoints",
+    "pickerSuffix": "color picker"
+  },
+  "builder": {
+    "heading": "Card Builder",
+    "lead": "Customize endpoint parameters below. Preview and embed code stay synchronized.",
+    "cardTypeLabel": "Card Endpoint",
+    "groups": {
+      "target": "Target & Identity",
+      "appearance": "Theme, Layout & Sizing",
+      "options": "Stats & Behavior Flags",
+      "colors": "Custom Colors (Hex or Gradient)",
+      "customParams": "Custom Query Parameters"
+    },
+    "actions": {
+      "render": "Render Preview",
+      "reset": "Reset Defaults",
+      "addParam": "Add Parameter",
+      "removeParam": "Remove",
+      "clearColor": "Clear",
+      "fillSample": "Fill Sample Value",
+      "openRaw": "Open Raw URL"
+    },
+    "fields": {
+      "username": "GitHub Username",
+      "userAlias": "Streak User Alias (user)",
+      "repo": "Repository Name",
+      "gistId": "Gist ID",
+      "customTitle": "Custom Title",
+      "theme": "Theme",
+      "locale": "Card Locale",
+      "layout": "Layout",
+      "cardWidth": "Card Width (px)",
+      "cardHeight": "Card Height (px)",
+      "borderRadius": "Border Radius (0-50)",
+      "lineHeight": "Line Height",
+      "hide": "Hide Items (comma-separated)",
+      "show": "Extra Stats (comma-separated)",
+      "excludeRepo": "Exclude Repos (comma-separated)",
+      "commitsYear": "Commits Year",
+      "langsCount": "Languages Count (1-10)",
+      "numberFormat": "Number Format",
+      "numberPrecision": "Number Precision",
+      "rankIcon": "Rank Icon",
+      "statsFormat": "Stats Format",
+      "sizeWeight": "Size Weight",
+      "countWeight": "Count Weight",
+      "descLines": "Description Lines",
+      "apiDomain": "WakaTime API Domain",
+      "range": "Time Range",
+      "displayFormat": "Display Format",
+      "timezone": "Timezone (IANA)",
+      "startingYear": "Starting Year",
+      "dateFormat": "Date Format",
+      "cacheSeconds": "Cache Seconds",
+      "paramKeyPlaceholder": "query_key",
+      "paramValPlaceholder": "value",
+      "bgPlaceholder": "fff or 45,141321,fe428e"
+    },
+    "flags": {
+      "show_icons": "Show Icons",
+      "include_all_commits": "Include All Commits",
+      "hide_border": "Hide Border",
+      "hide_title": "Hide Title",
+      "hide_rank": "Hide Rank",
+      "text_bold": "Bold Labels",
+      "disable_animations": "Disable Animations",
+      "hide_progress": "Hide Progress Bars",
+      "show_owner": "Show Owner",
+      "short_numbers": "Short Numbers"
+    },
+    "colorLabels": {
+      "title_color": "Title Color",
+      "text_color": "Text Color",
+      "icon_color": "Icon Color",
+      "bg_color": "Background / Gradient",
+      "border_color": "Border Color",
+      "ring_color": "Ring Color",
+      "fire_color": "Fire Color",
+      "side_nums_color": "Side Numbers Color",
+      "side_labels_color": "Side Labels Color",
+      "dates_color": "Dates Color"
+    },
+    "themePaletteHint": "Selected theme palette:",
+    "customParamsHint": "Add extra query parameters not listed above.",
+    "selects": {
+      "default": "default",
+      "defaultShort": "default (short)",
+      "percentages": "percentages (default)",
+      "time": "time (default)"
+    }
+  },
+  "preview": {
+    "heading": "Live Output & Source Code",
+    "canvasBg": "Canvas",
+    "bgChecker": "Checker",
+    "bgLight": "Light",
+    "bgDark": "Dark",
+    "statusIdle": "Ready",
+    "statusLoading": "Fetching live SVG from API...",
+    "statusSuccess": "Rendered",
+    "statusError": "Request failed",
+    "statusMissing": "Required parameter missing",
+    "missingGuide": "Enter the required parameter below or fill the sample value to preview this card.",
+    "errorGuide": "Could not load SVG output from the endpoint. Verify parameters or retry.",
+    "retry": "Retry Render",
+    "downloadSvg": "Download SVG",
+    "sourceHeading": "Synchronized Implementation Code",
+    "tabs": {
+      "markdown": "Markdown",
+      "html": "HTML",
+      "url": "URL",
+      "curl": "cURL / Fetch",
+      "svg": "Raw SVG"
+    },
+    "copy": "Copy Code",
+    "copied": "Copied",
+    "svgPending": "<!-- Waiting for rendered SVG output from endpoint... -->",
+    "svgUnavailable": "<!-- Raw SVG source becomes available after a successful preview render. -->",
+    "imageAlt": "Live generated GitHub card preview"
+  },
+  "docs": {
+    "heading": "API Endpoint Reference",
+    "lead": "All available SVG card, status, and health endpoints. Load any card directly into the builder or inspect live JSON responses.",
+    "filterAll": "All Endpoints",
+    "filterCards": "Card Endpoints",
+    "filterStatus": "Status & Health",
+    "loadInBuilder": "Load in Builder",
+    "testEndpoint": "Run Live Check",
+    "runningCheck": "Requesting...",
+    "paramsColName": "Parameter",
+    "paramsColReq": "Required",
+    "paramsColExample": "Example",
+    "paramsColDesc": "Description",
+    "requiredYes": "Required",
+    "requiredNo": "Optional",
+    "noParams": "No query parameters required.",
+    "exampleLabel": "Example URL",
+    "responseOutput": "Live Response",
+    "requestFailed": "Request failed"
+  },
+  "deployment": {
+    "heading": "Cloudflare Pages & Workers Deployment",
+    "lead": "Configure these Environment Variables / Secrets in your Cloudflare dashboard or wrangler.toml.",
+    "colVar": "Variable",
+    "colType": "Type",
+    "colDefault": "Default",
+    "colDesc": "Purpose",
+    "typeSecret": "Secret",
+    "typeVar": "Variable",
+    "vars": [
+      {
+        "name": "PAT_1, PAT_2, ...",
+        "type": "Secret",
+        "defaultValue": "-",
+        "desc": "GitHub Personal Access Tokens rotated automatically when rate limits hit."
+      },
+      {
+        "name": "GITHUB_USERNAME",
+        "type": "Variable",
+        "defaultValue": "machfudn",
+        "desc": "Default username fallback when username query parameter is omitted."
+      },
+      {
+        "name": "README_THEME",
+        "type": "Variable",
+        "defaultValue": "transparent",
+        "desc": "Default theme fallback when theme query parameter is omitted."
+      },
+      {
+        "name": "README_LOCALE",
+        "type": "Variable",
+        "defaultValue": "en",
+        "desc": "Default card language fallback when locale query parameter is omitted."
+      },
+      {
+        "name": "README_INCLUDE_ALL_COMMITS",
+        "type": "Variable",
+        "defaultValue": "true",
+        "desc": "Count all lifetime commits by default when include_all_commits is omitted."
+      },
+      {
+        "name": "README_LANGS_COUNT",
+        "type": "Variable",
+        "defaultValue": "8",
+        "desc": "Default number of languages shown on top-langs when langs_count is omitted."
+      },
+      {
+        "name": "CACHE_SECONDS",
+        "type": "Variable",
+        "defaultValue": "3600",
+        "desc": "Custom CDN cache lifetime in seconds."
+      },
+      {
+        "name": "WHITELIST",
+        "type": "Variable",
+        "defaultValue": "-",
+        "desc": "Comma-separated list of allowed GitHub usernames."
+      },
+      {
+        "name": "GIST_WHITELIST",
+        "type": "Variable",
+        "defaultValue": "-",
+        "desc": "Comma-separated list of allowed Gist IDs."
+      },
+      {
+        "name": "EXCLUDE_REPO",
+        "type": "Variable",
+        "defaultValue": "-",
+        "desc": "Comma-separated repository names excluded globally from card stats."
+      },
+      {
+        "name": "FETCH_MULTI_PAGE_STARS",
+        "type": "Variable",
+        "defaultValue": "false",
+        "desc": "Enable multi-page GraphQL star fetching for accounts with over 100 repositories."
+      }
+    ]
+  },
+  "cards": {
+    "/api": {
+      "label": "Stats Card",
+      "summary": "Generate GitHub account stats card (stars, commits, PRs, issues, rank).",
+      "aliases": "Alias: /api/stats"
+    },
+    "/api/streak": {
+      "label": "Streak Card",
+      "summary": "Generate GitHub contribution streak card (total, current, and longest streak).",
+      "aliases": "Alias: user param supported"
+    },
+    "/api/top-langs": {
+      "label": "Top Languages",
+      "summary": "Visualize most used programming languages across repositories.",
+      "aliases": "Layouts: normal, compact, donut, donut-vertical, pie"
+    },
+    "/api/pin": {
+      "label": "Pinned Repo",
+      "summary": "Generate repository pin card with stars, forks, language, and description.",
+      "aliases": "Requires: repo"
+    },
+    "/api/wakatime": {
+      "label": "WakaTime Card",
+      "summary": "Display coding activity from a public WakaTime profile.",
+      "aliases": "Requires: WakaTime username"
+    },
+    "/api/gist": {
+      "label": "Gist Card",
+      "summary": "Generate a card displaying metadata and stars for a GitHub Gist.",
+      "aliases": "Requires: id"
+    },
+    "/api/status/up": {
+      "label": "PAT Uptime",
+      "summary": "Check whether configured GitHub Personal Access Tokens are operational.",
+      "aliases": "Supports type=boolean or type=shields"
+    },
+    "/api/status/pat-info": {
+      "label": "PAT Diagnostics",
+      "summary": "Inspect valid, expired, exhausted, suspended, and error PAT counts.",
+      "aliases": "Returns JSON diagnostics"
+    },
+    "/health": {
+      "label": "Health Check",
+      "summary": "Return service liveness status JSON ({ status: 'ok', message, timestamp }).",
+      "aliases": "Also served on GET / with Accept: application/json"
+    }
+  }
+}

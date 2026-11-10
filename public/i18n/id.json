@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "title": "GitHub Readme Stats - Pembuat Kartu & Dokumentasi API",
+    "brand": "GitHub Readme Stats",
+    "subtitle": "Pembuat kartu SVG interaktif, preview output langsung, kode sumber siap salin, dan dokumentasi API Hono + TypeScript untuk Cloudflare Pages & Workers."
+  },
+  "nav": {
+    "playground": "Builder",
+    "endpoints": "Dokumentasi API",
+    "deployment": "Deployment",
+    "swagger": "Swagger UI",
+    "openapi": "OpenAPI JSON",
+    "sourceRepo": "Proyek Asli"
+  },
+  "toggles": {
+    "themeLabel": "Mode",
+    "themeLight": "Terang",
+    "themeDark": "Gelap",
+    "switchToDark": "Pindah ke mode gelap",
+    "switchToLight": "Pindah ke mode terang",
+    "langLabel": "Bahasa",
+    "langEn": "EN",
+    "langId": "ID"
+  },
+  "aria": {
+    "langGroup": "Bahasa antarmuka",
+    "navSections": "Bagian halaman",
+    "playground": "Playground Kartu",
+    "cardEndpoint": "Endpoint kartu",
+    "canvasBg": "Latar kanvas preview",
+    "codeFormat": "Format kode hasil",
+    "docsFilter": "Filter endpoint API",
+    "pickerSuffix": "pemilih warna"
+  },
+  "builder": {
+    "heading": "Pembuat Kartu Interaktif",
+    "lead": "Atur parameter endpoint di bawah. Preview kartu dan kode sumber tersinkron otomatis.",
+    "cardTypeLabel": "Pilih Endpoint Kartu",
+    "groups": {
+      "target": "Target & Identitas",
+      "appearance": "Tema, Tata Letak & Ukuran",
+      "options": "Opsi & Filter Data",
+      "colors": "Warna Kustom (Hex atau Gradien)",
+      "customParams": "Parameter Query Kustom"
+    },
+    "actions": {
+      "render": "Muat Preview",
+      "reset": "Reset Default",
+      "addParam": "Tambah Parameter",
+      "removeParam": "Hapus",
+      "clearColor": "Kosongkan",
+      "fillSample": "Isi Contoh",
+      "openRaw": "Buka URL Asli"
+    },
+    "fields": {
+      "username": "Username GitHub",
+      "userAlias": "Alias User Streak (user)",
+      "repo": "Nama Repositori",
+      "gistId": "ID Gist",
+      "customTitle": "Judul Kustom",
+      "theme": "Tema Kartu",
+      "locale": "Bahasa Kartu (Locale)",
+      "layout": "Tata Letak (Layout)",
+      "cardWidth": "Lebar Kartu (px)",
+      "cardHeight": "Tinggi Kartu (px)",
+      "borderRadius": "Radius Sudut (0-50)",
+      "lineHeight": "Tinggi Baris",
+      "hide": "Sembunyikan Item (pisah koma)",
+      "show": "Statistik Tambahan (pisah koma)",
+      "excludeRepo": "Kecualikan Repo (pisah koma)",
+      "commitsYear": "Tahun Commit",
+      "langsCount": "Jumlah Bahasa (1-10)",
+      "numberFormat": "Format Angka",
+      "numberPrecision": "Presisi Angka",
+      "rankIcon": "Ikon Peringkat",
+      "statsFormat": "Format Statistik",
+      "sizeWeight": "Bobot Ukuran",
+      "countWeight": "Bobot Jumlah",
+      "descLines": "Jumlah Baris Deskripsi",
+      "apiDomain": "Domain API WakaTime",
+      "range": "Rentang Waktu",
+      "displayFormat": "Format Tampilan",
+      "timezone": "Zona Waktu (IANA)",
+      "startingYear": "Tahun Mulai Streak",
+      "dateFormat": "Format Tanggal",
+      "cacheSeconds": "Durasi Cache (detik)",
+      "paramKeyPlaceholder": "nama_param",
+      "paramValPlaceholder": "nilai",
+      "bgPlaceholder": "fff atau 45,141321,fe428e"
+    },
+    "flags": {
+      "show_icons": "Tampilkan Ikon",
+      "include_all_commits": "Hitung Semua Commit",
+      "hide_border": "Sembunyikan Border",
+      "hide_title": "Sembunyikan Judul",
+      "hide_rank": "Sembunyikan Peringkat",
+      "text_bold": "Teks Tebal",
+      "disable_animations": "Matikan Animasi",
+      "hide_progress": "Sembunyikan Bar Progres",
+      "show_owner": "Tampilkan Pemilik",
+      "short_numbers": "Singkat Angka"
+    },
+    "colorLabels": {
+      "title_color": "Warna Judul",
+      "text_color": "Warna Teks",
+      "icon_color": "Warna Ikon",
+      "bg_color": "Latar / Gradien",
+      "border_color": "Warna Border",
+      "ring_color": "Warna Ring",
+      "fire_color": "Warna Api Streak",
+      "side_nums_color": "Angka Sisi",
+      "side_labels_color": "Label Sisi",
+      "dates_color": "Warna Tanggal"
+    },
+    "themePaletteHint": "Palet tema terpilih:",
+    "customParamsHint": "Tambahkan query parameter lain di luar daftar standar.",
+    "selects": {
+      "default": "bawaan",
+      "defaultShort": "bawaan (singkat)",
+      "percentages": "persentase (bawaan)",
+      "time": "waktu (bawaan)"
+    }
+  },
+  "preview": {
+    "heading": "Output Preview & Kode Sumber",
+    "canvasBg": "Latar Kanvas",
+    "bgChecker": "Papan Catur",
+    "bgLight": "Terang",
+    "bgDark": "Gelap",
+    "statusIdle": "Siap",
+    "statusLoading": "Mengambil SVG langsung dari API...",
+    "statusSuccess": "Berhasil dimuat",
+    "statusError": "Permintaan gagal",
+    "statusMissing": "Parameter wajib belum diisi",
+    "missingGuide": "Isi parameter wajib di panel kiri atau klik Isi Contoh untuk melihat preview kartu.",
+    "errorGuide": "Gagal memuat output SVG dari endpoint. Periksa parameter atau coba muat ulang.",
+    "retry": "Muat Ulang",
+    "downloadSvg": "Unduh SVG",
+    "sourceHeading": "Kode Implementasi Tersinkron",
+    "tabs": {
+      "markdown": "Markdown",
+      "html": "HTML",
+      "url": "URL",
+      "curl": "cURL / Fetch",
+      "svg": "Raw SVG"
+    },
+    "copy": "Salin Kode",
+    "copied": "Tersalin",
+    "svgPending": "<!-- Menunggu output SVG dari endpoint... -->",
+    "svgUnavailable": "<!-- Kode Raw SVG tersedia setelah preview berhasil dimuat. -->",
+    "imageAlt": "Preview langsung kartu GitHub"
+  },
+  "docs": {
+    "heading": "Dokumentasi Endpoint API",
+    "lead": "Seluruh endpoint kartu SVG, status token, dan health check. Muat endpoint kartu langsung ke builder atau uji respons JSON secara langsung.",
+    "filterAll": "Semua Endpoint",
+    "filterCards": "Endpoint Kartu",
+    "filterStatus": "Status & Health",
+    "loadInBuilder": "Muat di Builder",
+    "testEndpoint": "Uji Langsung",
+    "runningCheck": "Mengambil...",
+    "paramsColName": "Parameter",
+    "paramsColReq": "Sifat",
+    "paramsColExample": "Contoh",
+    "paramsColDesc": "Keterangan",
+    "requiredYes": "Wajib",
+    "requiredNo": "Opsional",
+    "noParams": "Tidak membutuhkan query parameter.",
+    "exampleLabel": "Contoh URL",
+    "responseOutput": "Hasil Respons",
+    "requestFailed": "Permintaan gagal"
+  },
+  "deployment": {
+    "heading": "Cloudflare Pages & Workers Deployment",
+    "lead": "Konfigurasikan Environment Variables / Secrets berikut di dashboard Cloudflare atau wrangler.toml.",
+    "colVar": "Variabel",
+    "colType": "Tipe",
+    "colDefault": "Default",
+    "colDesc": "Fungsi",
+    "typeSecret": "Secret",
+    "typeVar": "Variabel",
+    "vars": [
+      {
+        "name": "PAT_1, PAT_2, ...",
+        "type": "Secret",
+        "defaultValue": "-",
+        "desc": "GitHub Personal Access Token yang dirotasi otomatis saat mendekati batas rate limit."
+      },
+      {
+        "name": "GITHUB_USERNAME",
+        "type": "Variabel",
+        "defaultValue": "machfudn",
+        "desc": "Username default saat query parameter username tidak diberikan."
+      },
+      {
+        "name": "README_THEME",
+        "type": "Variabel",
+        "defaultValue": "transparent",
+        "desc": "Tema kartu default saat query parameter theme tidak diberikan."
+      },
+      {
+        "name": "README_LOCALE",
+        "type": "Variabel",
+        "defaultValue": "en",
+        "desc": "Bahasa kartu default saat query parameter locale tidak diberikan."
+      },
+      {
+        "name": "README_INCLUDE_ALL_COMMITS",
+        "type": "Variabel",
+        "defaultValue": "true",
+        "desc": "Menghitung seluruh commit sepanjang waktu saat include_all_commits tidak diset."
+      },
+      {
+        "name": "README_LANGS_COUNT",
+        "type": "Variabel",
+        "defaultValue": "8",
+        "desc": "Jumlah bahasa default pada kartu top-langs saat langs_count kosong."
+      },
+      {
+        "name": "CACHE_SECONDS",
+        "type": "Variabel",
+        "defaultValue": "3600",
+        "desc": "Durasi cache CDN kustom dalam detik."
+      },
+      {
+        "name": "WHITELIST",
+        "type": "Variabel",
+        "defaultValue": "-",
+        "desc": "Daftar username GitHub yang diizinkan (dipisah koma)."
+      },
+      {
+        "name": "GIST_WHITELIST",
+        "type": "Variabel",
+        "defaultValue": "-",
+        "desc": "Daftar ID Gist yang diizinkan (dipisah koma)."
+      },
+      {
+        "name": "EXCLUDE_REPO",
+        "type": "Variabel",
+        "defaultValue": "-",
+        "desc": "Nama repositori yang dikecualikan secara global (dipisah koma)."
+      },
+      {
+        "name": "FETCH_MULTI_PAGE_STARS",
+        "type": "Variabel",
+        "defaultValue": "false",
+        "desc": "Aktifkan pengambilan bintang GraphQL multi-halaman untuk akun dengan lebih dari 100 repo."
+      }
+    ]
+  },
+  "cards": {
+    "/api": {
+      "label": "Kartu Stats",
+      "summary": "Membuat kartu statistik akun GitHub (bintang, commit, PR, issue, dan peringkat).",
+      "aliases": "Alias: /api/stats"
+    },
+    "/api/streak": {
+      "label": "Kartu Streak",
+      "summary": "Membuat kartu streak kontribusi GitHub (total, streak saat ini, dan terpanjang).",
+      "aliases": "Alias: mendukung parameter user"
+    },
+    "/api/top-langs": {
+      "label": "Bahasa Teratas",
+      "summary": "Memvisualisasikan bahasa pemrograman yang paling sering dipakai di repositori.",
+      "aliases": "Layout: normal, compact, donut, donut-vertical, pie"
+    },
+    "/api/pin": {
+      "label": "Pin Repositori",
+      "summary": "Membuat kartu pin repositori lengkap dengan jumlah bintang, fork, bahasa, dan deskripsi.",
+      "aliases": "Wajib: repo"
+    },
+    "/api/wakatime": {
+      "label": "Kartu WakaTime",
+      "summary": "Menampilkan aktivitas coding dari profil publik WakaTime.",
+      "aliases": "Wajib: username WakaTime"
+    },
+    "/api/gist": {
+      "label": "Kartu Gist",
+      "summary": "Membuat kartu metadata dan bintang untuk sebuah GitHub Gist.",
+      "aliases": "Wajib: id"
+    },
+    "/api/status/up": {
+      "label": "Uptime PAT",
+      "summary": "Memeriksa apakah GitHub Personal Access Token yang terpasang aktif.",
+      "aliases": "Mendukung type=boolean atau type=shields"
+    },
+    "/api/status/pat-info": {
+      "label": "Diagnostik PAT",
+      "summary": "Rincian jumlah token PAT yang valid, kedaluwarsa, habis kuota, atau bermasalah.",
+      "aliases": "Mengembalikan JSON diagnostik"
+    },
+    "/health": {
+      "label": "Health Check",
+      "summary": "Mengembalikan status kesiapan layanan dalam JSON ({ status: 'ok', message, timestamp }).",
+      "aliases": "Juga dilayani GET / dengan Accept: application/json"
+    }
+  }
+}
