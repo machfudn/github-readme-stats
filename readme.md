@@ -74,6 +74,11 @@ Embed dynamic stats in your GitHub profile or repository README using standard M
 ![Pinned Repo](https://<your-project>.pages.dev/api/pin?username=yourusername&repo=your-repo&theme=dracula)
 ```
 
+### GitHub Streak Card
+```md
+![GitHub Streak](https://<your-project>.pages.dev/api/streak?username=yourusername&timezone=UTC&theme=transparent)
+```
+
 > [!TIP]
 > If your instance defines `GITHUB_USERNAME` or other defaults, you can omit `?username=` from URLs completely. For example, `https://<your-project>.pages.dev/api` will automatically render cards for that configured default user.
 
@@ -83,7 +88,9 @@ Embed dynamic stats in your GitHub profile or repository README using standard M
 
 | Endpoint | Method | Description |
 |---|---|---|
+| `/` | `GET` | Interactive card builder UI & API docs (HTML); returns JSON health check when `Accept: application/json` is specified |
 | `/api` | `GET` | Generates GitHub stats card SVG |
+| `/api/streak` | `GET` | Generates GitHub contribution streak card SVG |
 | `/api/pin` | `GET` | Generates pinned repository card SVG |
 | `/api/top-langs` | `GET` | Generates top programming languages card SVG |
 | `/api/wakatime` | `GET` | Generates WakaTime coding activity card SVG |
@@ -92,8 +99,8 @@ Embed dynamic stats in your GitHub profile or repository README using standard M
 | `/api/status/pat-info` | `GET` | GitHub PAT tokens rate-limit health check (JSON) |
 | `/ui` or `/swagger` | `GET` | Interactive Swagger UI API documentation |
 | `/doc` | `GET` | OpenAPI 3.0 specification JSON |
-| `/health` or `/` | `GET` | Service readiness probe JSON |
-
+| `/health` | `GET` | Service readiness probe JSON |
+| `/i18n/en.json`, `/i18n/id.json` | `GET` | UI localization dictionaries (JSON) |
 ---
 
 ## Cards & Features
@@ -115,6 +122,25 @@ Displays total stars earned, commits, pull requests, issues opened, contributed 
 - `hide_rank`: Hide the global rank circle (`true` / `false`).
 - `rank_icon`: Select rank badge icon (`default`, `github`, or `percentile`).
 - `number_format`: Number abbreviations (`short` for `1.2k` or `long` for `1,200`).
+
+---
+
+### GitHub Streak Card
+
+Displays total contributions, current streak, and longest streak using daily GitHub GraphQL contribution calendar data.
+
+```md
+![GitHub Streak](https://<your-project>.pages.dev/api/streak?username=anuraghazra&timezone=Asia/Jakarta&short_numbers=true)
+```
+
+**Key Parameters**:
+- `username` / `user`: GitHub username (defaults to `GITHUB_USERNAME` env if configured).
+- `timezone`: IANA timezone identifier for daily streak boundaries (default `UTC`).
+- `starting_year`: Minimum year to start aggregating contribution history.
+- `short_numbers`: Abbreviate large contribution counts such as `1.2k` (`true` / `false`).
+- `date_format`: Custom date format pattern using `Y`, `y`, `F`, `M`, `m`, `n`, `d`, `j`, and optional `[...]` current-year segments (e.g. `M j[, Y]`).
+- `card_width` / `card_height`: Custom card width and height in pixels (default `495` x `195`).
+- `ring_color`, `fire_color`, `side_nums_color`, `side_labels_color`, `dates_color`: Streak-specific hex overrides without `#`.
 
 ---
 
