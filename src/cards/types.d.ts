@@ -65,3 +65,21 @@ export type WakaTimeOptions = CommonOptions & {
 export type GistCardOptions = CommonOptions & {
   show_owner: boolean;
 };
+
+export type StreakCardOptions = Partial<
+  Omit<CommonOptions, "theme" | "hide_border" | "border_radius">
+> & {
+  theme?: string;
+  hide_border?: boolean;
+  border_radius?: number;
+  card_width?: number;
+  card_height?: number;
+  short_numbers?: boolean;
+  disable_animations?: boolean;
+  date_format?: string;
+  ring_color?: string;
+  fire_color?: string;
+  side_nums_color?: string;
+  side_labels_color?: string;
+  dates_color?: string;
+};

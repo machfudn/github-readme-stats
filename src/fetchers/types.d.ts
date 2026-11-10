@@ -116,3 +116,18 @@ export type WakaTimeLang = {
   text: string;
   percent: number;
 };
+
+export type StreakData = {
+  totalContributions: number;
+  firstContribution: string;
+  currentStreak: {
+    length: number;
+    start: string;
+    end: string;
+  };
+  longestStreak: {
+    length: number;
+    start: string;
+    end: string;
+  };
+};
