@@ -237,3 +237,61 @@ export const StatusUpQuerySchema = z.object({
     example: "shields",
   }),
 });
+
+export const StreakQuerySchema = z.object({
+  username: z.string().optional().openapi({
+    description: "GitHub username",
+    example: "anuraghazra",
+  }),
+  user: z.string().optional().openapi({
+    description: "GitHub username alias (streak-stats compatibility)",
+    example: "anuraghazra",
+  }),
+  timezone: z.string().optional().openapi({
+    description:
+      "Timezone identifier (e.g. Asia/Jakarta, America/New_York, UTC)",
+    example: "Asia/Jakarta",
+  }),
+  starting_year: z.string().optional().openapi({
+    description: "Minimum year to calculate streak from",
+    example: "2020",
+  }),
+  card_width: z.string().optional().openapi({
+    description: "Custom card width in px",
+    example: "495",
+  }),
+  card_height: z.string().optional().openapi({
+    description: "Custom card height in px",
+    example: "195",
+  }),
+  short_numbers: z.string().optional().openapi({
+    description: "Format large numbers with suffix (e.g. 1.2k)",
+    example: "true",
+  }),
+  date_format: z.string().optional().openapi({
+    description: "Custom date format pattern",
+    example: "M j[, Y]",
+  }),
+  disable_animations: z.string().optional().openapi({
+    description: "Disable SVG animations (true/false)",
+    example: "false",
+  }),
+  ring_color: z.string().optional().openapi({
+    description: "Ring color (hex code without # or color name)",
+    example: "fb8c00",
+  }),
+  fire_color: z.string().optional().openapi({
+    description: "Fire icon color (hex code without # or color name)",
+    example: "ff4500",
+  }),
+  side_nums_color: z.string().optional().openapi({
+    description: "Side numbers color (hex code without # or color name)",
+  }),
+  side_labels_color: z.string().optional().openapi({
+    description: "Side labels color (hex code without # or color name)",
+  }),
+  dates_color: z.string().optional().openapi({
+    description: "Date text color (hex code without # or color name)",
+  }),
+  ...CommonCardParams,
+});

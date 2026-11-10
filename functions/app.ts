@@ -2,6 +2,7 @@ import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import type { Bindings } from "../src/types/env.ts";
 import { handleApi } from "./adapter.ts";
+import { renderHomePage, enDict, idDict } from "./home.ts";
 import { renderError } from "../src/common/render.js";
 import {
   StatsQuerySchema,
@@ -10,6 +11,7 @@ import {
   WakatimeQuerySchema,
   GistQuerySchema,
   StatusUpQuerySchema,
+  StreakQuerySchema,
 } from "./schemas.ts";
 
 // Import existing core handlers
@@ -27,6 +29,7 @@ import gistHandler from "../api/gist.js";
 import statusUpHandler from "../api/status/up.js";
 // @ts-ignore
 import patInfoHandler from "../api/status/pat-info.js";
+import streakHandler from "../api/streak.ts";
 
 export const app = new OpenAPIHono<{ Bindings: Bindings }>({
   defaultHook: (result, c) => {
@@ -154,6 +157,21 @@ const gistRoute = createRoute({
   },
 });
 
+const streakRoute = createRoute({
+  method: "get",
+  path: "/api/streak",
+  tags: ["Cards"],
+  summary: "GitHub Streak Stats Card",
+  description:
+    "Dynamically generate a card displaying your GitHub contribution streak",
+  request: {
+    query: StreakQuerySchema,
+  },
+  responses: {
+    200: SvgResponse,
+  },
+});
+
 const statusUpRoute = createRoute({
   method: "get",
   path: "/api/status/up",
@@ -196,6 +214,32 @@ const patInfoRoute = createRoute({
 const rootRoute = createRoute({
   method: "get",
   path: "/",
+  tags: ["UI & Health"],
+  summary: "Interactive Card Builder UI & API Docs",
+  description:
+    "Serves the interactive card builder HTML UI by default, or health JSON when Accept: application/json is requested explicitly.",
+  responses: {
+    200: {
+      description: "Interactive HTML UI or API health JSON",
+      content: {
+        "text/html": {
+          schema: z.string(),
+        },
+        "application/json": {
+          schema: z.object({
+            status: z.string(),
+            message: z.string(),
+            timestamp: z.string(),
+          }),
+        },
+      },
+    },
+  },
+});
+
+const healthRoute = createRoute({
+  method: "get",
+  path: "/health",
   tags: ["Health"],
   summary: "Health Check",
   description: "Check if the API is running properly",
@@ -217,6 +261,35 @@ const rootRoute = createRoute({
 
 // @ts-ignore Hono OpenAPI typing mismatch with defaultHook
 app.openapi(rootRoute, (c) => {
+  const accept = (c.req.header("accept") || "").toLowerCase();
+  const wantsJsonOnly =
+    accept.includes("application/json") &&
+    !accept.includes("text/html") &&
+    !accept.includes("*/*");
+  if (wantsJsonOnly) {
+    return c.json(
+      {
+        status: "ok",
+        message: "GitHub Readme Stats API is running",
+        timestamp: new Date().toISOString(),
+      },
+      200,
+    );
+  }
+  return c.html(
+    renderHomePage({
+      username: c.env?.GITHUB_USERNAME,
+      theme: c.env?.README_THEME,
+      locale: c.env?.README_LOCALE,
+      includeAllCommits: c.env?.README_INCLUDE_ALL_COMMITS,
+      langsCount: c.env?.README_LANGS_COUNT,
+    }),
+    200,
+  );
+});
+
+// @ts-ignore Hono OpenAPI typing mismatch with defaultHook
+app.openapi(healthRoute, (c) => {
   return c.json(
     {
       status: "ok",
@@ -226,13 +299,9 @@ app.openapi(rootRoute, (c) => {
     200,
   );
 });
-app.get("/health", (c) =>
-  c.json({
-    status: "ok",
-    message: "GitHub Readme Stats API is running",
-    timestamp: new Date().toISOString(),
-  }),
-);
+
+app.get("/i18n/en.json", (c) => c.json(enDict));
+app.get("/i18n/id.json", (c) => c.json(idDict));
 
 app.openapi(statsRoute, handleApi(statsHandler));
 app.openapi(pinRoute, handleApi(pinHandler));
@@ -241,6 +310,7 @@ app.openapi(wakatimeRoute, handleApi(wakatimeHandler));
 app.openapi(gistRoute, handleApi(gistHandler));
 app.openapi(statusUpRoute, handleApi(statusUpHandler));
 app.openapi(patInfoRoute, handleApi(patInfoHandler));
+app.openapi(streakRoute, handleApi(streakHandler));
 
 // Alias /api/stats to /api
 app.get("/api/stats", handleApi(statsHandler));
@@ -251,6 +321,7 @@ app.get("/api/pin/", handleApi(pinHandler));
 app.get("/api/top-langs/", handleApi(topLangsHandler));
 app.get("/api/wakatime/", handleApi(wakatimeHandler));
 app.get("/api/gist/", handleApi(gistHandler));
+app.get("/api/streak/", handleApi(streakHandler));
 
 // Expose OpenAPI JSON document
 app.doc("/doc", {
